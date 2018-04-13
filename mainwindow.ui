@@ -225,6 +225,11 @@
            <height>100</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <family>Arial</family>
+          </font>
+         </property>
          <property name="focusPolicy">
           <enum>Qt::NoFocus</enum>
          </property>

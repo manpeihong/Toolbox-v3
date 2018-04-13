@@ -70,7 +70,7 @@ try:
 except ModuleNotFoundError:
     moduleavailable[8] = 0
 
-__version__ = 3.0 + thisversion / 10
+__version__ = 3.01 + thisversion / 10
 __emailaddress__ = "pman3@uic.edu"
 
 os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
@@ -195,7 +195,7 @@ class mainwindow(QMainWindow, Ui_main):
         QMainWindow.__init__(self)
         Ui_main.__init__(self)
         self.setupUi(self)
-        self.setWindowIcon(QIcon('icon.icns'))
+        self.setWindowIcon(QtGui.QIcon('icon.icns'))
         self.setStatusBar(self.statusbar)
         self.sub0 = QMdiSubWindow()
         self.sub1 = QMdiSubWindow()
