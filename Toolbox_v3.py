@@ -70,7 +70,7 @@ try:
 except ModuleNotFoundError:
     moduleavailable[8] = 0
 
-__version__ = 3.0 + thisversion / 10
+__version__ = 3.01 + thisversion / 10
 __emailaddress__ = "pman3@uic.edu"
 
 os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
