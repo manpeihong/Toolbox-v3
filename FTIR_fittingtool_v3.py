@@ -21,9 +21,7 @@ import queue
 import cross_platform_config
 from sys import platform as _platform
 import ftir_sql_browser
-import guessnumbers
 import configparser
-from ColorTheme import color_theme
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 from PyQt5.QtCore import *
