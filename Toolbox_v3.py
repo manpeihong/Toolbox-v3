@@ -70,7 +70,7 @@ try:
 except ModuleNotFoundError:
     moduleavailable[8] = 0
 
-__version__ = 3.01 + thisversion / 10
+__version__ = 3.0 + thisversion / 10
 __emailaddress__ = "pman3@uic.edu"
 
 os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
@@ -266,6 +266,31 @@ class mainwindow(QMainWindow, Ui_main):
         window.show()
         window.exec_()
 
+    def addMCT(self):
+        self.numberofgui += 1
+        gui = MCT_calculator_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        self.setupsubwindow(gui, "MCT Calculator", MCT_calculator_class_v3.__version__)
+
+    def addgrowthtemp(self):
+        self.numberofgui += 1
+        gui = growthtempcalculator_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        self.setupsubwindow(gui, "Growthtemp calculator", growthtempcalculator_class_v3.__version__)
+
+    def adddatabase(self):
+        self.numberofgui += 1
+        gui = MBEdatabase_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        self.setupsubwindow(gui, "MBE database updater", MBEdatabase_class_v3.__version__)
+
+    def addln2(self):
+        self.numberofgui += 1
+        gui = LN2order_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        self.setupsubwindow(gui, "LN2 order generator", LN2order_class_v3.__version__)
+
+    def addXRD(self):
+        self.numberofgui += 1
+        gui = XRD_analyzer_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        self.setupsubwindow(gui, "XRD data analyzer", XRD_analyzer_class_v3.__version__)
+
     def addftir(self):
         self.numberofgui += 1
         gui = FTIR_fittingtool_GUI_v3(getattr(self, "sub{}".format(self.numberofgui)), self)
@@ -281,6 +306,11 @@ class mainwindow(QMainWindow, Ui_main):
         gui = Kp_method_GUI_v3(getattr(self, "sub{}".format(self.numberofgui)), self)
         self.setupsubwindow(gui, "Kp method", Kp_method_v3.__version__)
 
+    def addgrade(self):
+        self.numberofgui += 1
+        gui = GradeAnalyer(getattr(self, "sub{}".format(self.numberofgui)), self)
+        self.setupsubwindow(gui, "Grade Analyzer", Grade_Analyzer_GUI_v3.__version__)
+
     def setupsubwindow(self, gui, name, version):
         getattr(self, "sub{}".format(self.numberofgui)).setWidget(gui)
         getattr(self, "sub{}".format(self.numberofgui)).setWindowTitle("{} v{}".format(name, version))
@@ -292,7 +322,7 @@ class mainwindow(QMainWindow, Ui_main):
 
     def addinitiallog(self, name):
         self.addlog('-' * 160, "blue")
-        self.addlog('Welcome to {}'.format(name), "blue")
+        self.addlog('Welcome to {}.'.format(name), "blue")
         self.addlog("This is the log file.", "blue")
         self.addlog('-' * 160, "blue")
 
