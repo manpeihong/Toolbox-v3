@@ -195,6 +195,7 @@ class mainwindow(QMainWindow, Ui_main):
         QMainWindow.__init__(self)
         Ui_main.__init__(self)
         self.setupUi(self)
+        self.setWindowIcon(QIcon('icon.icns'))
         self.setStatusBar(self.statusbar)
         self.sub0 = QMdiSubWindow()
         self.sub1 = QMdiSubWindow()
