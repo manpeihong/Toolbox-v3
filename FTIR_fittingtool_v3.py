@@ -1559,7 +1559,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
 
     def help(self):
         if self.needmorehelp == 0:
-            self.addlog('*' * 60)
+            self.addlog('-' * 160, "blue")
             self.addlog("FTIR fitting tool, with customization of layer structures. v{}. ".format(__version__),
                         self.warningcolor3)
             self.addlog('Open a FTIR .csv file --> Customize your layer structure on the right. '
@@ -1573,7 +1573,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
                 self.addlog('For more help and information, press ⌘+P again.', self.warningcolor3)
             elif _platform == "win32" or _platform == "win64" or _platform == "linux" or _platform == "linux2":
                 self.addlog('For more help and information, press Ctrl+P again.', self.warningcolor3)
-            self.addlog('*' * 60)
+            self.addlog('-' * 160, "blue")
 
             self.needmorehelp = 1
 
@@ -2073,7 +2073,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
 
         self.try_remove_fitline(self.fitline_trans)
 
-        self.addlog('*' * 60)
+        self.addlog('-' * 160, "blue")
         self.addlog("Fitting fringes in process. Please wait...")
 
         self.addprogressbar()
@@ -2250,7 +2250,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         else:
             pass
 
-        self.addlog('*' * 60)
+        self.addlog('-' * 160, "blue")
         if self.cal_k_instead == 1:
             self.addlog("k calculation in process. Please wait...")
         else:
@@ -2505,10 +2505,12 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
             if clearornot == 1:
                 for i in reversed(range(self.maingrid.count())):
                     self.maingrid.itemAt(i).widget().setParent(None)
-                self.__init__(self.root, self.masterroot)
-                self.root.setWidget(self)
+                #self.__init__(self.root, self.masterroot)
+                obj = FTIR_fittingtool_GUI_v3(self.root, self.masterroot)
+                self.root.setWidget(obj)
+                self.root.showMaximized()
                 self.root.show()
-                self.addlog('*' * 60)
+                self.addlog('-' * 160, "blue")
             else:
                 pass
 
