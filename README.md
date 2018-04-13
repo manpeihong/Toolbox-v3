@@ -3,6 +3,8 @@ The third generation of the Toolbox.
 
 To get a detailed documentation of this software, please open the software and go to Menubar->Module->Document.
 
+FTIR fitting tool v3 is included to serve as a demo. 
+
 System requirement:
 
 Mac OS/ Windows / Linux (Not tested)
