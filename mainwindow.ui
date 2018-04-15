@@ -319,7 +319,7 @@
     <addaction name="openMCT"/>
     <addaction name="opengrowthtemp"/>
     <addaction name="opendatabase"/>
-    <addaction name="openln2"/>
+    <addaction name="openbackup"/>
     <addaction name="openXRD"/>
     <addaction name="openftir"/>
     <addaction name="openkp"/>
@@ -377,9 +377,9 @@
     <string>Ctrl+3</string>
    </property>
   </action>
-  <action name="openln2">
+  <action name="openbackup">
    <property name="text">
-    <string>LN2 order generator</string>
+    <string>Backup / LN2 order</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+4</string>
