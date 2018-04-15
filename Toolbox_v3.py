@@ -4,7 +4,9 @@ import math
 import configparser
 from random import randint
 from sys import platform as _platform
-from PyQt5 import uic, QtGui
+from PyQt5 import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
 modulelist = ["module_name_short", "MCT", "growthtemp", "database", "backup", "XRD", "ftir", "kp", 'grade']
