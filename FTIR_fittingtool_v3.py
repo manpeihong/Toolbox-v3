@@ -1,10 +1,6 @@
 import os
 import sys
 import time
-from threading import Timer
-from tkinter import *
-from tkinter import filedialog, messagebox
-from tkinter.ttk import Progressbar
 import csv
 import matplotlib
 
@@ -48,7 +44,7 @@ Ui_MCTa, QtBaseClass = uic.loadUiType(qtMCTafile)
 class FIT_FTIR:
     def __init__(self, root, temp, wavenumbers, transmissions, subd, layertype_list, entry_x_list, entry_d_list,
                  checklayer_list, scalefactor, angle, CdTe_offset, HgTe_offset, subtype, fittype, blindcal,
-                 progress_callback=None, wn_callback = None):
+                 progress_callback=None, wn_callback=None):
         self.root = root
         self.temp = temp
         self.wns = wavenumbers
