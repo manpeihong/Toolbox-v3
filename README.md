@@ -1,4 +1,4 @@
-# Toolbox v3.00
+# Toolbox v3.02
 The third generation of the Toolbox.
 
 To get a detailed documentation of this software, please open the software and go to Menubar->Module->Document.
