@@ -197,33 +197,20 @@ class mainwindow(QMainWindow, Ui_main):
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon('icon.icns'))
         self.setStatusBar(self.statusbar)
-        self.sub0 = QMdiSubWindow()
-        self.sub1 = QMdiSubWindow()
-        self.sub2 = QMdiSubWindow()
-        self.sub3 = QMdiSubWindow()
-        self.sub4 = QMdiSubWindow()
-        self.sub5 = QMdiSubWindow()
-        self.sub6 = QMdiSubWindow()
-        self.sub7 = QMdiSubWindow()
-        self.sub8 = QMdiSubWindow()
-        self.sub9 = QMdiSubWindow()
-        self.sub10 = QMdiSubWindow()
-        self.sub11 = QMdiSubWindow()
-        self.sub12 = QMdiSubWindow()
-        self.sub13 = QMdiSubWindow()
-        self.sub14 = QMdiSubWindow()
-        self.sub15 = QMdiSubWindow()
-        self.sub16 = QMdiSubWindow()
-        self.sub17 = QMdiSubWindow()
-        self.sub18 = QMdiSubWindow()
-        self.sub19 = QMdiSubWindow()
+        self.subwindowlist = []
+
+        for i in range(0, 30):      # Set 30 subwindows max.
+            sub = QMdiSubWindow()
+            sub.setAttribute(Qt.WA_DeleteOnClose)       # Important for closing tabs properly.
+            sub.setWindowIcon(QIcon())      # Remove the icon for each sub window.
+            self.subwindowlist.append(sub)
 
         self.gui0 = welcome_GUI()
-        self.sub0.setWidget(self.gui0)
-        self.sub0.setWindowTitle("Welcome.")
-        self.mdi.addSubWindow(self.sub0)
-        self.sub0.showMaximized()
-        self.sub0.show()
+        self.subwindowlist[0].setWidget(self.gui0)
+        self.subwindowlist[0].setWindowTitle("Welcome.")
+        self.mdi.addSubWindow(self.subwindowlist[0])
+        self.subwindowlist[0].showMaximized()
+        self.subwindowlist[0].show()
 
         self.numberofgui = 0
 
@@ -255,11 +242,11 @@ class mainwindow(QMainWindow, Ui_main):
     def addhelp(self):
         self.numberofgui += 1
         gui = help_GUI()
-        getattr(self, "sub{}".format(self.numberofgui)).setWidget(gui)
-        getattr(self, "sub{}".format(self.numberofgui)).setWindowTitle("Document")
-        self.mdi.addSubWindow(getattr(self, "sub{}".format(self.numberofgui)))
-        getattr(self, "sub{}".format(self.numberofgui)).showMaximized()
-        getattr(self, "sub{}".format(self.numberofgui)).show()
+        self.subwindowlist[self.numberofgui].setWidget(gui)
+        self.subwindowlist[self.numberofgui].setWindowTitle("Document")
+        self.mdi.addSubWindow(self.subwindowlist[self.numberofgui])
+        self.subwindowlist[self.numberofgui].showMaximized()
+        self.subwindowlist[self.numberofgui].show()
 
     def addguess(self, event):
         window = guessnumbers_GUI(self)
@@ -268,32 +255,32 @@ class mainwindow(QMainWindow, Ui_main):
 
     def addMCT(self):
         self.numberofgui += 1
-        gui = MCT_calculator_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        gui = MCT_calculator_GUI(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "MCT Calculator", MCT_calculator_class_v3.__version__)
 
     def addgrowthtemp(self):
         self.numberofgui += 1
-        gui = growthtempcalculator_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        gui = growthtempcalculator_GUI(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "Growthtemp calculator", growthtempcalculator_class_v3.__version__)
 
     def adddatabase(self):
         self.numberofgui += 1
-        gui = MBEdatabase_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        gui = MBEdatabase_GUI(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "MBE database updater", MBEdatabase_class_v3.__version__)
 
     def addbackup(self):
         self.numberofgui += 1
-        gui = File_backup_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        gui = File_backup_GUI(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "File backup / LN2 order generator", File_backup.__version__)
 
     def addXRD(self):
         self.numberofgui += 1
-        gui = XRD_analyzer_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        gui = XRD_analyzer_GUI(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "XRD data analyzer", XRD_analyzer_class_v3.__version__)
 
     def addftir(self):
         self.numberofgui += 1
-        gui = FTIR_fittingtool_GUI_v3(getattr(self, "sub{}".format(self.numberofgui)), self)
+        gui = FTIR_fittingtool_GUI_v3(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "FTIR Fitting Tool", FTIR_fittingtool_v3.__version__)
 
         if _platform == "darwin":
@@ -303,20 +290,20 @@ class mainwindow(QMainWindow, Ui_main):
 
     def addkp(self):
         self.numberofgui += 1
-        gui = Kp_method_GUI_v3(getattr(self, "sub{}".format(self.numberofgui)), self)
+        gui = Kp_method_GUI_v3(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "Kp method", Kp_method_v3.__version__)
 
     def addgrade(self):
         self.numberofgui += 1
-        gui = GradeAnalyer(getattr(self, "sub{}".format(self.numberofgui)), self)
+        gui = GradeAnalyer(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "Grade Analyzer", Grade_Analyzer_GUI_v3.__version__)
 
     def setupsubwindow(self, gui, name, version):
-        getattr(self, "sub{}".format(self.numberofgui)).setWidget(gui)
-        getattr(self, "sub{}".format(self.numberofgui)).setWindowTitle("{} v{}".format(name, version))
-        self.mdi.addSubWindow(getattr(self, "sub{}".format(self.numberofgui)))
-        getattr(self, "sub{}".format(self.numberofgui)).showMaximized()
-        getattr(self, "sub{}".format(self.numberofgui)).show()
+        self.subwindowlist[self.numberofgui].setWidget(gui)
+        self.subwindowlist[self.numberofgui].setWindowTitle("{} v{}".format(name, version))
+        self.mdi.addSubWindow(self.subwindowlist[self.numberofgui])
+        self.subwindowlist[self.numberofgui].showMaximized()
+        self.subwindowlist[self.numberofgui].show()
 
         self.addinitiallog(name)
 
