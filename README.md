@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Toolbox v3.01
-=======
 # Toolbox v3.02
 >>>>>>> py_Peihong
 The third generation of the Toolbox.
