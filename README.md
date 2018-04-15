@@ -1,5 +1,4 @@
 # Toolbox v3.02
->>>>>>> py_Peihong
 The third generation of the Toolbox.
 
 To get a detailed documentation of this software, please open the software and go to Menubar->Module->Document.
