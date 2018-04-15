@@ -1,6 +1,7 @@
 import os
 import sys
 import math
+import configparser
 from random import randint
 from sys import platform as _platform
 from PyQt5 import uic, QtGui
@@ -325,6 +326,12 @@ class mainwindow(QMainWindow, Ui_main):
 
 
 def main():
+    os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
+    config = configparser.ConfigParser()
+    config.read('configuration.ini')
+
+    fullscreenonstart = int(config["Mainwindow"]["fullscreenonstart"])
+
     app = QApplication(sys.argv)
     splash_pix = QPixmap('bg.png')
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
@@ -337,7 +344,8 @@ def main():
 
     window = mainwindow()
     window.setWindowTitle("Toolbox v{}".format(__version__))
-
+    if fullscreenonstart == 1:
+        window.showFullScreen()
     window.show()
     splash.finish(window)
     sys.exit(app.exec_())
