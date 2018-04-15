@@ -6,7 +6,7 @@ from sys import platform as _platform
 from PyQt5 import uic, QtGui
 from PyQt5.QtWidgets import *
 
-modulelist = ["module_name_short", "MCT", "growthtemp", "database", "ln2", "XRD", "ftir", "kp", 'grade']
+modulelist = ["module_name_short", "MCT", "growthtemp", "database", "backup", "XRD", "ftir", "kp", 'grade']
 moduleavailable = ["1_is_avalable", 1, 1, 1, 1, 1, 1, 1, 1]
 thisversion = 0
 
@@ -35,10 +35,10 @@ try:
 except ModuleNotFoundError:
     moduleavailable[3] = 0
 try:
-    import LN2order_class_v3
-    from LN2order_class_v3 import *
+    import File_backup
+    from File_backup import *
 
-    thisversion += float(LN2order_class_v3.__version__)
+    thisversion += float(File_backup.__version__)
 except ModuleNotFoundError:
     moduleavailable[4] = 0
 try:
@@ -281,10 +281,10 @@ class mainwindow(QMainWindow, Ui_main):
         gui = MBEdatabase_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
         self.setupsubwindow(gui, "MBE database updater", MBEdatabase_class_v3.__version__)
 
-    def addln2(self):
+    def addbackup(self):
         self.numberofgui += 1
-        gui = LN2order_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
-        self.setupsubwindow(gui, "LN2 order generator", LN2order_class_v3.__version__)
+        gui = File_backup_GUI(getattr(self, "sub{}".format(self.numberofgui)), self)
+        self.setupsubwindow(gui, "File backup / LN2 order generator", File_backup.__version__)
 
     def addXRD(self):
         self.numberofgui += 1
@@ -339,10 +339,20 @@ class mainwindow(QMainWindow, Ui_main):
 
 def main():
     app = QApplication(sys.argv)
+    splash_pix = QPixmap('bg.png')
+    splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
+    splash.setMask(splash_pix.mask())
+    splash.show()
+    app.processEvents()
+
+    # Simulate something that takes time
+    time.sleep(2)
+
     window = mainwindow()
     window.setWindowTitle("Toolbox v{}".format(__version__))
 
     window.show()
+    splash.finish(window)
     sys.exit(app.exec_())
 
 
