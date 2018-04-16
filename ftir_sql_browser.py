@@ -1,5 +1,3 @@
-import MySQLdb
-
 try:
     import MySQLdb
 except:
