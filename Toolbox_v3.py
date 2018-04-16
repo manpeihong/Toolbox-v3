@@ -82,7 +82,7 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.02" + "/" + "{}".format(thisversion)
+__version__ = "3.03" + "/" + "{}".format(thisversion)
 __emailaddress__ = "pman3@uic.edu"
 
 os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
