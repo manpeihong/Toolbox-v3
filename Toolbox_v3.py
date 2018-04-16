@@ -14,6 +14,7 @@ from PyQt5.QtWidgets import *
 modulelist = ["module_name_short", "MCT", "growthtemp", "database", "backup", "XRD", "ftir", "kp", 'grade']
 moduleavailable = ["1_is_avalable", 1, 1, 1, 1, 1, 1, 1, 1]
 thisversion = 0
+darkthemeavailable = 1
 
 # All modules below can be successfully imported only if you have them in your file directory
 # AND ALL STANDARD PACKAGES REQUIED FOR EACH MODULE ARE PRE_INSTALLED!
@@ -75,6 +76,12 @@ try:
 except ModuleNotFoundError:
     moduleavailable[8] = 0
 
+try:
+    import qdarkstyle
+    import matplotlib.pyplot as plt
+except ModuleNotFoundError:
+    darkthemeavailable = 0
+
 __version__ = "3.02" + "/" + "{}".format(thisversion)
 __emailaddress__ = "pman3@uic.edu"
 
@@ -87,6 +94,16 @@ qthelpfile = "help.ui"
 Ui_help, QtBaseClass = uic.loadUiType(qthelpfile)
 qtguessfile = "guessnumbers.ui"
 Ui_guess, QtBaseClass = uic.loadUiType(qtguessfile)
+
+os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
+config = configparser.ConfigParser()
+config.read('configuration.ini')
+colortheme = int(config["Settings"]["colortheme"])
+fullscreenonstart = int(config["Mainwindow"]["fullscreenonstart"])
+
+if colortheme + darkthemeavailable == 2:
+    plt.style.use('dark_background')
+
 
 class welcome_GUI(QWidget, Ui_welcome):
 
@@ -330,12 +347,6 @@ class mainwindow(QMainWindow, Ui_main):
 
 
 def main():
-    os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
-    config = configparser.ConfigParser()
-    config.read('configuration.ini')
-
-    fullscreenonstart = int(config["Mainwindow"]["fullscreenonstart"])
-
     app = QApplication(sys.argv)
     splash_pix = QPixmap('bg.png')
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
@@ -350,6 +361,8 @@ def main():
     window.setWindowTitle("Toolbox v{}".format(__version__))
     if fullscreenonstart == 1:
         window.showFullScreen()
+    if colortheme + darkthemeavailable == 2:
+        app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
     window.show()
     splash.finish(window)
     sys.exit(app.exec_())
