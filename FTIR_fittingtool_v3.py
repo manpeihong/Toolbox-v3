@@ -1016,14 +1016,12 @@ class PlotCanvas(FigureCanvas):
     def __init__(self, root, width, height, xlowcut, xhighcut, y1lowcut, y1highcut, y2lowcut, y2highcut):
         self.fig = Figure(figsize=(width, height), dpi=100)
         self.fig.subplots_adjust(left=0.08, bottom=0.12, right=0.92, top=0.95)
-        self.fig.patch.set_facecolor("white")
         self.plot = self.fig.add_subplot(111)
         self.plot.set_xlabel('Wavenumbers ($cm^{-1}$)')
         self.plot.set_ylabel('Transmission (%)')
         self.plot.set_xlim([xlowcut, xhighcut])
         self.plot.set_ylim([y1lowcut, y1highcut])
         self.plot.grid(True)
-        self.plot.set_facecolor("white")
         self.vline = self.plot.axvline(x=400, visible=True, color='k', linewidth=1)
         self.hline = self.plot.axhline(y=0, visible=True, color='k', linewidth=1)
         self.dot = self.plot.plot(0, 0, marker='o', color='r')
@@ -1271,7 +1269,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         self.fitline_absorb = None
         self.fitline_absorb_MCT = None
 
-        self.osdir = os.getcwd()
+        self.osdir = os.path.dirname(os.path.realpath(sys.argv[0]))
         self.totaltime = 0
         self.programbusy = 0
         self.needmorehelp = 0
@@ -1546,7 +1544,6 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         if legend_or_not == 1:
             legend = theplot.legend(loc=legend_location, shadow=True)
             frame = legend.get_frame()
-            frame.set_facecolor('0.90')
 
             # Set the fontsize
             for label in legend.get_texts():
