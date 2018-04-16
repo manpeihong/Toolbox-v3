@@ -11,8 +11,8 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-modulelist = ["module_name_short", "MCT", "growthtemp", "database", "backup", "XRD", "ftir", "kp", 'grade']
-moduleavailable = ["1_is_avalable", 1, 1, 1, 1, 1, 1, 1, 1]
+modulelist = ["module_name_short", "MCT", "database", "backup", "XRD", "ftir", "kp", 'grade']
+moduleavailable = ["1_is_avalable", 1, 1, 1, 1, 1, 1, 1]
 thisversion = 0
 darkthemeavailable = 1
 
@@ -26,55 +26,49 @@ try:
     thisversion += float(MCT_calculator_class_v3.__version__)
 except ModuleNotFoundError:
     moduleavailable[1] = 0
-try:
-    import growthtempcalculator_class_v3
-    from growthtempcalculator_class_v3 import *
 
-    thisversion += float(growthtempcalculator_class_v3.__version__)
-except ModuleNotFoundError:
-    moduleavailable[2] = 0
 try:
     import MBEdatabase_class_v3
     from MBEdatabase_class_v3 import *
 
     thisversion += float(MBEdatabase_class_v3.__version__)
 except ModuleNotFoundError:
-    moduleavailable[3] = 0
+    moduleavailable[2] = 0
 try:
     import File_backup
     from File_backup import *
 
     thisversion += float(File_backup.__version__)
 except ModuleNotFoundError:
-    moduleavailable[4] = 0
+    moduleavailable[3] = 0
 try:
     import XRD_analyzer_class_v3
     from XRD_analyzer_class_v3 import *
 
     thisversion += float(XRD_analyzer_class_v3.__version__)
 except ModuleNotFoundError:
-    moduleavailable[5] = 0
+    moduleavailable[4] = 0
 try:
     import FTIR_fittingtool_v3
     from FTIR_fittingtool_v3 import *
 
     thisversion += float(FTIR_fittingtool_v3.__version__)
 except ModuleNotFoundError:
-    moduleavailable[6] = 0
+    moduleavailable[5] = 0
 try:
     import Kp_method_v3
     from Kp_method_v3 import *
 
     thisversion += float(Kp_method_v3.__version__)
 except ModuleNotFoundError:
-    moduleavailable[7] = 0
+    moduleavailable[6] = 0
 try:
     import Grade_Analyzer_GUI_v3
     from Grade_Analyzer_GUI_v3 import *
 
     thisversion += float(Grade_Analyzer_GUI_v3.__version__)
 except ModuleNotFoundError:
-    moduleavailable[8] = 0
+    moduleavailable[7] = 0
 
 try:
     import qdarkstyle
@@ -279,11 +273,6 @@ class mainwindow(QMainWindow, Ui_main):
         self.numberofgui += 1
         gui = MCT_calculator_GUI(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "MCT Calculator", MCT_calculator_class_v3.__version__)
-
-    def addgrowthtemp(self):
-        self.numberofgui += 1
-        gui = growthtempcalculator_GUI(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "Growthtemp calculator", growthtempcalculator_class_v3.__version__)
 
     def adddatabase(self):
         self.numberofgui += 1
