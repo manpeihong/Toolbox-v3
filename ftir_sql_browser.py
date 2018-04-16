@@ -2,7 +2,7 @@ try:
     import MySQLdb
 except:
     print("Need to install mysql plugin, run: pip install mysqlclient")
-    exit()
+    #exit()
 import sqlite3
 import configparser
 import os

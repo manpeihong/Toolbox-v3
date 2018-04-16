@@ -16,7 +16,12 @@ import threading
 import queue
 import cross_platform_config
 from sys import platform as _platform
-import ftir_sql_browser
+try:
+    import MySQLdb
+    import ftir_sql_browser
+except:
+    print("Need to install mysql plugin, run: pip install mysqlclient")
+
 import configparser
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
