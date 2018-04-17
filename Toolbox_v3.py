@@ -76,7 +76,7 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.03" + "/" + "{}".format(thisversion)
+__version__ = "3.04" + "/" + "{}".format(thisversion)
 __emailaddress__ = "pman3@uic.edu"
 
 os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
@@ -212,6 +212,7 @@ class mainwindow(QMainWindow, Ui_main):
         Ui_main.__init__(self)
         self.setupUi(self)
         self.setWindowIcon(QtGui.QIcon('icon.icns'))
+        self.splitter.setSizes([800, 100])
         self.setStatusBar(self.statusbar)
         self.subwindowlist = []
 
@@ -224,6 +225,7 @@ class mainwindow(QMainWindow, Ui_main):
         self.gui0 = welcome_GUI()
         self.subwindowlist[0].setWidget(self.gui0)
         self.subwindowlist[0].setWindowTitle("Welcome.")
+        self.subwindowlist[0].aboutToActivate.connect(self.Normalstatus)
         self.mdi.addSubWindow(self.subwindowlist[0])
         self.subwindowlist[0].showMaximized()
         self.subwindowlist[0].show()
@@ -260,6 +262,7 @@ class mainwindow(QMainWindow, Ui_main):
         gui = help_GUI()
         self.subwindowlist[self.numberofgui].setWidget(gui)
         self.subwindowlist[self.numberofgui].setWindowTitle("Document")
+        self.subwindowlist[self.numberofgui].aboutToActivate.connect(self.Normalstatus)
         self.mdi.addSubWindow(self.subwindowlist[self.numberofgui])
         self.subwindowlist[self.numberofgui].showMaximized()
         self.subwindowlist[self.numberofgui].show()
@@ -294,11 +297,6 @@ class mainwindow(QMainWindow, Ui_main):
         gui = FTIR_fittingtool_GUI_v3(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, "FTIR Fitting Tool", FTIR_fittingtool_v3.__version__)
 
-        if _platform == "darwin":
-            self.status1.setText("Welcome to FTIR Fitting Tool. Press ⌘+P for help.")
-        else:
-            self.status1.setText("Welcome to FTIR Fitting Tool. Press Ctrl+P for help.")
-
     def addkp(self):
         self.numberofgui += 1
         gui = Kp_method_GUI_v3(self.subwindowlist[self.numberofgui], self)
@@ -312,11 +310,29 @@ class mainwindow(QMainWindow, Ui_main):
     def setupsubwindow(self, gui, name, version):
         self.subwindowlist[self.numberofgui].setWidget(gui)
         self.subwindowlist[self.numberofgui].setWindowTitle("{} v{}".format(name, version))
+
+        if name == "FTIR Fitting Tool":
+            self.subwindowlist[self.numberofgui].aboutToActivate.connect(self.FTIRstatus)
+        else:
+            self.subwindowlist[self.numberofgui].aboutToActivate.connect(self.Normalstatus)
+
         self.mdi.addSubWindow(self.subwindowlist[self.numberofgui])
         self.subwindowlist[self.numberofgui].showMaximized()
         self.subwindowlist[self.numberofgui].show()
 
         self.addinitiallog(name)
+
+    def Normalstatus(self):
+        if _platform == "darwin":
+            self.status1.setText("﻿Welcome to the Toolbox. Press ⌘+M to see document/help.")
+        else:
+            self.status1.setText("﻿Welcome to the Toolbox. Press Ctrl+M to see document/help.")
+
+    def FTIRstatus(self):
+        if _platform == "darwin":
+            self.status1.setText("Welcome to FTIR Fitting Tool. Press ⌘+P for help.")
+        else:
+            self.status1.setText("Welcome to FTIR Fitting Tool. Press Ctrl+P for help.")
 
     def addinitiallog(self, name):
         self.addlog('-' * 160, "blue")
