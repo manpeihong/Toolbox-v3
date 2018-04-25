@@ -5,6 +5,7 @@ import math
 import configparser
 from random import randint
 from sys import platform as _platform
+import io
 from PyQt5 import *
 from PyQt5 import uic, QtGui
 from PyQt5.QtCore import *
@@ -32,7 +33,8 @@ def Load_Available_Modules( main_window ):
         ("FTIR_fittingtool_v3", "FTIR_fittingtool_GUI_v3", "FTIR Fitting Tool"),
         ("Kp_method_v3", "Kp_method_GUI_v3", "Kp method"),
         ("Grade_Analyzer_GUI_v3", "GradeAnalyer", "Grade Analyzer"),
-        ("FTIR_Commander.PyQt_FTIR_GUI", "FtirCommanderWindow", "FTIR Commander")]
+        ("FTIR_Commander.PyQt_FTIR_GUI", "FtirCommanderWindow", "FTIR Commander"),
+        ("IV_controller","IV_controller_GUI","IV controller")]
 
     global thisversion # allows access to global variable in this function
     keyboard_shortcut_index = 1
@@ -87,7 +89,21 @@ colortheme = int(config["Settings"]["colortheme"])
 fullscreenonstart = int(config["Mainwindow"]["fullscreenonstart"])
 
 if colortheme + darkthemeavailable == 2:
-    plt.style.use('dark_background')
+    #plt.style.use('dark_background')
+    plt.rcParams.update({
+        "lines.color": "white",
+        "patch.edgecolor": "white",
+        "text.color": "white",
+        "axes.facecolor": "#31363b",
+        "axes.edgecolor": "lightgray",
+        "axes.labelcolor": "white",
+        "xtick.color": "white",
+        "ytick.color": "white",
+        "grid.color": "lightgray",
+        "figure.facecolor": "#31363b",
+        "figure.edgecolor": "#31363b",
+        "savefig.facecolor": "#31363b",
+        "savefig.edgecolor": "#31363b"})
 
 
 class welcome_GUI(QWidget, Ui_welcome):
@@ -194,6 +210,15 @@ class guessnumbers_GUI(QDialog, Ui_guess):
                 break
 
 
+class SystemTrayIcon(QSystemTrayIcon):
+
+    def __init__(self, icon, parent=None):
+        QSystemTrayIcon.__init__(self, icon, parent)
+        menu = QMenu(parent)
+        exitAction = menu.addAction("Exit")
+        self.setContextMenu(menu)
+
+
 class mainwindow(QMainWindow, Ui_main):
 
     """Optinal settings for customized result."""
@@ -202,10 +227,13 @@ class mainwindow(QMainWindow, Ui_main):
         QMainWindow.__init__(self)
         Ui_main.__init__(self)
         self.setupUi(self)
-        self.setWindowIcon(QtGui.QIcon('icon.icns'))
+        self.setWindowIcon(QIcon('icon.icns'))
         self.splitter.setSizes([800, 100])
         self.setStatusBar(self.statusbar)
         self.subwindowlist = []
+        self.clipboard = QLabel()   #In order to transfer info between subwindows, create a null label as clipboard.
+        self.clipboard.setParent(self)
+        self.clipboard.hide()
 
         for i in range(0, 30):      # Set 30 subwindows max.
             sub = QMdiSubWindow()
@@ -239,6 +267,26 @@ class mainwindow(QMainWindow, Ui_main):
 
         self.authorLabel.mousePressEvent = self.addguess
 
+        # System Tray
+        self.trayIcon = QSystemTrayIcon(QIcon('icon.icns'), self)
+        self.menu = QMenu()
+        self.exitAction = self.menu.addAction("Exit")
+
+        def quitmainwindow():
+            self.close()
+
+        self.exitAction.triggered.connect(quitmainwindow)
+        self.trayIcon.setContextMenu(self.menu)
+
+        if _platform != "darwin":
+            def __icon_activated(reason):
+                if reason == QSystemTrayIcon.DoubleClick:
+                    self.showFullScreen()   # Currently not working.
+                    self.show()
+            self.trayIcon.activated.connect(__icon_activated)
+
+        self.trayIcon.show()
+
     def initialmenuitems(self, item, available):
         if available == 1:
             try:
@@ -267,7 +315,6 @@ class mainwindow(QMainWindow, Ui_main):
         self.numberofgui += 1
         gui = window_type(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, module_title, module_version)
-
 
     def setupsubwindow(self, gui, name, version):
         self.subwindowlist[self.numberofgui].setWidget(gui)
@@ -330,8 +377,49 @@ def main():
         window.showFullScreen()
     if colortheme + darkthemeavailable == 2:
         app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
+
     window.show()
     splash.finish(window)
+
+    # Override excepthook to prevent program crashing and create feekback log.
+
+    def excepthook(excType, excValue, tracebackobj):
+        """
+        Global function to catch unhandled exceptions in mainthread ONLY.
+
+        @param excType exception type
+        @param excValue exception value
+        @param tracebackobj traceback object
+        """
+        separator = '-' * 80
+        logFile = time.strftime("%m_%d_%Y_%H_%M_%S") + ".log"
+        notice = \
+            """An unhandled exception occurred. \n""" \
+            """Please report the problem via email to <%s>.\n""" \
+            """A log has been written to "%s".\n\nError information:\n""" % \
+            (__emailaddress__, logFile)
+        timeString = time.strftime("%m/%d/%Y, %H:%M:%S")
+
+        tbinfofile = io.StringIO()
+        traceback.print_tb(tracebackobj, None, tbinfofile)
+        tbinfofile.seek(0)
+        tbinfo = tbinfofile.read()
+        errmsg = '%s: \n%s' % (str(excType), str(excValue))
+        sections = [separator, timeString, separator, errmsg, separator, tbinfo]
+        msg = '\n'.join(sections)
+        try:
+            f = open(logFile, "w")
+            f.write(msg)
+            f.write("Version: {}".format(__version__))
+            f.close()
+        except IOError:
+            pass
+        errorbox = QMessageBox()
+        errorbox.setText(str(notice) + str(msg) + "Version: " + __version__)
+        errorbox.exec_()
+
+    sys.excepthook = excepthook
+
     sys.exit(app.exec_())
 
 

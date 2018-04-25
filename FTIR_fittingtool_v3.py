@@ -30,7 +30,7 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 import traceback, sys
 
-__version__ = '3.00'
+__version__ = '3.01'
 __emailaddress__ = "pman3@uic.edu"
 
 os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
@@ -120,7 +120,11 @@ class FIT_FTIR:
                           ("Si3N4_k.csv", "wl_k_Si3N4", "k_Si3N4"),
                           ("ZnSe_k_ideal.csv", "wl_k_i_ZnSe", "k_i_ZnSe"),
                           ("BaF2_k_ideal.csv", "wl_k_i_BaF2", "k_i_BaF2"),
-                          ("ZnS_k_ideal.csv", "wl_k_i_ZnS", "k_i_ZnS")]
+                          ("ZnS_k_ideal.csv", "wl_k_i_ZnS", "k_i_ZnS"),
+                          ("SiO_n.csv", "wl_n_SiO", "n_SiO"),
+                          ("PbTe_n.csv", "wl_n_PbTe", "n_PbTe"),
+                          ("Al_n.csv", "wl_n_Al", "n_Al"),
+                          ("Si_k.csv", "wl_k_Si", "k_Si")]
 
         self.osdir = os.getcwd()
         self.n_dir = os.getcwd() + "/Refractive_Index"
@@ -349,9 +353,16 @@ class FIT_FTIR:
                     min(getattr(self, "wl_k_{}".format(material)), key=lambda x: abs(x - lamda)))]
 
         elif material == "Si":
-            return 0
+            if self.fittingtype in [8, 9, 10]:  # Use ideal k files.
+                return 0
+            else:
+                return getattr(self, "k_{}".format(material))[getattr(self, "wl_k_{}".format(material)).index(
+                    min(getattr(self, "wl_k_{}".format(material)), key=lambda x: abs(x - lamda)))]
 
         elif material == "Air":
+            return 0
+
+        else:
             return 0
 
     def show_fringes(self):
@@ -1236,8 +1247,8 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         self.filename = ''
         self.numberofdata = 0
         self.numberofdata2 = 0
-        self.colororders = ['blue', 'green', 'cyan', 'magenta', 'yellow', 'black']
-        self.colororders2 = ['red', 'green', 'cyan', 'magenta', 'yellow', 'black', 'red', 'green', 'cyan', 'magenta',
+        self.colororders = ['blue', 'green', 'cyan', 'magenta', 'yellow', 'orange']
+        self.colororders2 = ['red', 'green', 'cyan', 'magenta', 'yellow', 'orange', 'red', 'green', 'cyan', 'magenta',
                              'yellow', 'black']
         self.intial_thicknesses_or_not = 1
         self.entry_d_list_initial = []
@@ -1347,7 +1358,8 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         self.lb_x.setText('x\u2193')
         self.lb_d.setText('d(\u03BCm)\u2193')
 
-        self.available_materials = ["CdTe", "MCT", "SL", "Si", "ZnSe", "BaF2", "Ge", "ZnS", "Si3N4", "Air"]
+        self.available_materials = ["CdTe", "MCT", "SL", "Si", "ZnSe", "BaF2", "Ge", "ZnS", "Si3N4", "Air",
+                                    "SiO", "PbTe", "Al"]
         self.available_subs = ["Si", "CdZnTe", "Air"]
 
         self.layernumber = 0
@@ -1418,6 +1430,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         self.buttonaddlayer.clicked.connect(self.add_layer_on_top)
 
         self.buttonabort.hide()
+        self.buttonabort.setStyleSheet('QPushButton {color: red;}')
         self.grid22.addWidget(self.suboption, 27, 0)
         self.grid22.addWidget(self.entry_x_0, 27, 1)
         self.grid22.addWidget(self.entry_d_0, 27, 2)
@@ -1616,7 +1629,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
 
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
-        file = dlg.getOpenFileName(self, 'Save file', self.osdir, "CSV files (*.CSV *.csv)")
+        file = dlg.getOpenFileName(self, 'Open file', self.osdir, "CSV files (*.CSV *.csv)")
 
         if file[0] == "":
             return
