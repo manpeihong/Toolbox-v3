@@ -1318,6 +1318,36 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>buttonsettings</tabstop>
+  <tabstop>buttonclear</tabstop>
+  <tabstop>buttonopen</tabstop>
+  <tabstop>buttonsql</tabstop>
+  <tabstop>buttonload</tabstop>
+  <tabstop>buttonabort</tabstop>
+  <tabstop>buttonsave</tabstop>
+  <tabstop>buttonsave2</tabstop>
+  <tabstop>buttonmct</tabstop>
+  <tabstop>buttoncal</tabstop>
+  <tabstop>buttonfringes</tabstop>
+  <tabstop>buttonshowtrans</tabstop>
+  <tabstop>buttonaddlayer</tabstop>
+  <tabstop>entry_31</tabstop>
+  <tabstop>entry_32</tabstop>
+  <tabstop>button31</tabstop>
+  <tabstop>button32</tabstop>
+  <tabstop>entry_33</tabstop>
+  <tabstop>entry_332</tabstop>
+  <tabstop>button33</tabstop>
+  <tabstop>button332</tabstop>
+  <tabstop>button34</tabstop>
+  <tabstop>button35</tabstop>
+  <tabstop>entry_21</tabstop>
+  <tabstop>entry_y2</tabstop>
+  <tabstop>entry_23</tabstop>
+  <tabstop>entry_24</tabstop>
+  <tabstop>button_21</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

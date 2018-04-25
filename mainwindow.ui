@@ -314,12 +314,14 @@
      <string>Module</string>
     </property>
     <addaction name="openMCT"/>
+    <addaction name="openrecipe"/>
     <addaction name="opendatabase"/>
     <addaction name="openbackup"/>
     <addaction name="openXRD"/>
     <addaction name="openftir"/>
     <addaction name="openkp"/>
     <addaction name="opengrade"/>
+    <addaction name="openiv"/>
     <addaction name="separator"/>
     <addaction name="openhelp"/>
     <addaction name="separator"/>
@@ -333,7 +335,15 @@
     <addaction name="actionNormal"/>
     <addaction name="actionFullscreen"/>
    </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="actionUndo"/>
+    <addaction name="actionRedo"/>
+   </widget>
    <addaction name="menuAdd"/>
+   <addaction name="menuEdit"/>
    <addaction name="menuView"/>
   </widget>
   <action name="openftir">
@@ -341,7 +351,7 @@
     <string>FTIR fitting tool v3</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+5</string>
+    <string>Ctrl+6</string>
    </property>
   </action>
   <action name="openhelp">
@@ -357,7 +367,7 @@
     <string>Kp method</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+6</string>
+    <string>Ctrl+7</string>
    </property>
   </action>
   <action name="openMCT">
@@ -381,7 +391,7 @@
     <string>MBE databse updator</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+2</string>
+    <string>Ctrl+3</string>
    </property>
   </action>
   <action name="openbackup">
@@ -389,7 +399,7 @@
     <string>Backup / LN2 order</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+3</string>
+    <string>Ctrl+4</string>
    </property>
   </action>
   <action name="openXRD">
@@ -397,7 +407,7 @@
     <string>XRD T3SL analyzer</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+4</string>
+    <string>Ctrl+5</string>
    </property>
   </action>
   <action name="opengrade">
@@ -405,7 +415,7 @@
     <string>Grade analyzer</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+7</string>
+    <string>Ctrl+8</string>
    </property>
   </action>
   <action name="actionQuit">
@@ -429,6 +439,38 @@
   <action name="actionNormal">
    <property name="text">
     <string>Normal</string>
+   </property>
+  </action>
+  <action name="openrecipe">
+   <property name="text">
+    <string>Recipe designer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+2</string>
+   </property>
+  </action>
+  <action name="openiv">
+   <property name="text">
+    <string>IV_controller</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+9</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
  </widget>
