@@ -123,7 +123,8 @@ class FIT_FTIR:
                           ("ZnS_k_ideal.csv", "wl_k_i_ZnS", "k_i_ZnS"),
                           ("SiO_n.csv", "wl_n_SiO", "n_SiO"),
                           ("PbTe_n.csv", "wl_n_PbTe", "n_PbTe"),
-                          ("Al_n.csv", "wl_n_Al", "n_Al")]
+                          ("Al_n.csv", "wl_n_Al", "n_Al"),
+                          ("Si_k.csv", "wl_k_Si", "k_Si")]
 
         self.osdir = os.getcwd()
         self.n_dir = os.getcwd() + "/Refractive_Index"
@@ -352,7 +353,11 @@ class FIT_FTIR:
                     min(getattr(self, "wl_k_{}".format(material)), key=lambda x: abs(x - lamda)))]
 
         elif material == "Si":
-            return 0
+            if self.fittingtype in [8, 9, 10]:  # Use ideal k files.
+                return 0
+            else:
+                return getattr(self, "k_{}".format(material))[getattr(self, "wl_k_{}".format(material)).index(
+                    min(getattr(self, "wl_k_{}".format(material)), key=lambda x: abs(x - lamda)))]
 
         elif material == "Air":
             return 0
