@@ -313,13 +313,6 @@
     <property name="title">
      <string>Module</string>
     </property>
-    <addaction name="openMCT"/>
-    <addaction name="opendatabase"/>
-    <addaction name="openbackup"/>
-    <addaction name="openXRD"/>
-    <addaction name="openftir"/>
-    <addaction name="openkp"/>
-    <addaction name="opengrade"/>
     <addaction name="separator"/>
     <addaction name="openhelp"/>
     <addaction name="separator"/>
