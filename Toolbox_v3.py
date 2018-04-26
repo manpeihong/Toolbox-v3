@@ -12,79 +12,56 @@ from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 
-modulelist = ["module_name_short", "MCT", "recipe", "database", "backup", "XRD", "ftir", "kp", 'grade', "iv"]
-moduleavailable = ["1_is_avalable", 1, 1, 1, 1, 1, 1, 1, 1, 1]
+import importlib
+
 thisversion = 0
 darkthemeavailable = 1
 
-# All modules below can be successfully imported only if you have them in your file directory
-# AND ALL LIBRARIES REQUIRED FOR EACH MODULE ARE PRE_INSTALLED!
-# If you are not sure what package need to be installed before running, remove the "try...except..." method for
-# the specific module below, and the error message telling you what you are missing should pop up.
-try:
-    import MCT_calculator_class_v3
-    from MCT_calculator_class_v3 import *
-    thisversion += float(MCT_calculator_class_v3.__version__)
-except ModuleNotFoundError:
-    moduleavailable[1] = 0
 
-try:
-    import Recipe_designer
-    from Recipe_designer import *
-    thisversion += float(Recipe_designer.__version__)
-except ModuleNotFoundError:
-    moduleavailable[2] = 0
+def Load_Available_Modules( main_window ):
+    # All modules below can be successfully imported only if you have them in your file directory
+    # AND ALL STANDARD PACKAGES REQUIED FOR EACH MODULE ARE PRE_INSTALLED!
+    # If you are not sure what package need to be installed before running, remove the "try...except..." method for
+    # the specific module below, and the error message telling you what you are missing should pop up.
+    #module_short_names = ["MCT", "database", "backup", "XRD", "ftir", "kp", "grade", "FTIR_Commander"]
 
-try:
-    import MBEdatabase_class_v3
-    from MBEdatabase_class_v3 import *
+    # (Module Name (file_name.py or folder.file_name.py, QWidget for module window, text title of module for titlebar)
+    modules = [("MCT_calculator_class_v3", "MCT_calculator_GUI", "MCT Calculator"),
+        ("MBEdatabase_class_v3", "MBEdatabase_GUI", "MBE database updater"),
+        ("File_backup", "File_backup_GUI", "File backup / LN2 order generator"),
+        ("XRD_analyzer_class_v3", "XRD_analyzer_GUI", "XRD data analyzer"),
+        ("FTIR_fittingtool_v3", "FTIR_fittingtool_GUI_v3", "FTIR Fitting Tool"),
+        ("Kp_method_v3", "Kp_method_GUI_v3", "Kp method"),
+        ("Grade_Analyzer_GUI_v3", "GradeAnalyer", "Grade Analyzer"),
+        ("FTIR_Commander.PyQt_FTIR_GUI", "FtirCommanderWindow", "FTIR Commander"),
+        ("IV_controller","IV_controller_GUI","IV controller")]
 
-    thisversion += float(MBEdatabase_class_v3.__version__)
-except ModuleNotFoundError:
-    moduleavailable[3] = 0
-try:
-    import File_backup
-    from File_backup import *
+    global thisversion # allows access to global variable in this function
+    keyboard_shortcut_index = 1
+    first_non_module_action = main_window.menuAdd.actions()[0] # We will put the new menu actions before this one
+    for module_name, window_type, module_title in modules:
 
-    thisversion += float(File_backup.__version__)
-except ModuleNotFoundError:
-    moduleavailable[4] = 0
-try:
-    import XRD_analyzer_class_v3
-    from XRD_analyzer_class_v3 import *
+        try:
+            module = importlib.import_module( module_name ) # For example: import MCT_calculator_class_v3
+            thisversion += float(module.__version__) # Toolbox version is the sum of its components
+            #module_available.append( True )
 
-    thisversion += float(XRD_analyzer_class_v3.__version__)
-except ModuleNotFoundError:
-    moduleavailable[5] = 0
-try:
-    import FTIR_fittingtool_v3
-    from FTIR_fittingtool_v3 import *
+            module_window = getattr(module, window_type)
 
-    thisversion += float(FTIR_fittingtool_v3.__version__)
-except ModuleNotFoundError:
-    moduleavailable[6] = 0
-try:
-    import Kp_method_v3
-    from Kp_method_v3 import *
+            openAct = QAction( module_title, main_window )
+            openAct.setShortcuts( QKeySequence("Ctrl+" + str(keyboard_shortcut_index) ) )
+            #openAct.setStatusTip( "Tool tip message" )
+            openAct.triggered.connect( lambda ignore, module_version=module.__version__, module_window=module_window, module_title=module_title: main_window.addModule( module_version, module_window, module_title ) )
+            main_window.menuAdd.insertAction( first_non_module_action, openAct ) # insert openAct before first_non_module_action
 
-    thisversion += float(Kp_method_v3.__version__)
-except ModuleNotFoundError:
-    moduleavailable[7] = 0
-try:
-    import Grade_Analyzer_GUI_v3
-    from Grade_Analyzer_GUI_v3 import *
+        #except ModuleNotFoundError:
+        except: # Something went wrong loading the module, probably it isn't present.  Leave an unclickable entry so people know about it
+            #module_available.append( False )
+            blank_action = QAction( module_title, main_window )
+            blank_action.setDisabled( True )
+            main_window.menuAdd.insertAction( first_non_module_action, blank_action ) # insert blank_action before first_non_module_action
 
-    thisversion += float(Grade_Analyzer_GUI_v3.__version__)
-except ModuleNotFoundError:
-    moduleavailable[8] = 0
-
-try:
-    import IV_controller
-    from IV_controller import *
-
-    thisversion += float(IV_controller.__version__)
-except ModuleNotFoundError:
-    moduleavailable[9] = 0
+        keyboard_shortcut_index += 1
 
 try:
     import qdarkstyle
@@ -272,11 +249,11 @@ class mainwindow(QMainWindow, Ui_main):
         self.subwindowlist[0].showMaximized()
         self.subwindowlist[0].show()
 
+
         self.numberofgui = 0
 
         self.initialmenuitems("help", 1)
-        for i in range(1, len(modulelist)):
-            self.initialmenuitems(modulelist[i], moduleavailable[i])
+        Load_Available_Modules( self )
 
         if _platform == "darwin":
             self.status1.setText("﻿Welcome to the Toolbox. Press ⌘+M to see document/help.")
@@ -334,50 +311,10 @@ class mainwindow(QMainWindow, Ui_main):
         window.show()
         window.exec_()
 
-    def addMCT(self):
+    def addModule( self, module_version, window_type, module_title):
         self.numberofgui += 1
-        gui = MCT_calculator_GUI(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "MCT Calculator", MCT_calculator_class_v3.__version__)
-
-    def addrecipe(self):
-        self.numberofgui += 1
-        gui = Recipe_designer_GUI(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "Recipe Designer", Recipe_designer.__version__)
-
-    def adddatabase(self):
-        self.numberofgui += 1
-        gui = MBEdatabase_GUI(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "MBE database updater", MBEdatabase_class_v3.__version__)
-
-    def addbackup(self):
-        self.numberofgui += 1
-        gui = File_backup_GUI(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "File backup / LN2 order generator", File_backup.__version__)
-
-    def addXRD(self):
-        self.numberofgui += 1
-        gui = XRD_analyzer_GUI(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "XRD data analyzer", XRD_analyzer_class_v3.__version__)
-
-    def addftir(self):
-        self.numberofgui += 1
-        gui = FTIR_fittingtool_GUI_v3(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "FTIR Fitting Tool", FTIR_fittingtool_v3.__version__)
-
-    def addkp(self):
-        self.numberofgui += 1
-        gui = Kp_method_GUI_v3(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "Kp method", Kp_method_v3.__version__)
-
-    def addgrade(self):
-        self.numberofgui += 1
-        gui = GradeAnalyer(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "Grade Analyzer", Grade_Analyzer_GUI_v3.__version__)
-
-    def addiv(self):
-        self.numberofgui += 1
-        gui = IV_controller_GUI(self.subwindowlist[self.numberofgui], self)
-        self.setupsubwindow(gui, "IV controller", IV_controller.__version__)
+        gui = window_type(self.subwindowlist[self.numberofgui], self)
+        self.setupsubwindow(gui, module_title, module_version)
 
     def setupsubwindow(self, gui, name, version):
         self.subwindowlist[self.numberofgui].setWidget(gui)

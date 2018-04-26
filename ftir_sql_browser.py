@@ -21,22 +21,25 @@ Ui_MainWindow, QtBaseClass = uic.loadUiType(qtDesignerFile)
 class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     # Create signals here
     signal_to_emit = QtCore.pyqtSignal(str)
+    Send_Data_To_Callback = QtCore.pyqtSignal( dict, list )
 
-    def __init__(self):
-        QtWidgets.QMainWindow.__init__(self)
+    def __init__(self, parent):
+        self.loaded_successfully = False
+        QtWidgets.QMainWindow.__init__(self, parent=parent)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
 
         config = configparser.ConfigParser()
         config.read('configuration.ini')
 
-        self.Connect_To_SQL(config)
+        if not self.Connect_To_SQL(config):
+            return
         self.sqlUser_lineEdit.setText(config["SQL_Server"]["default_user"]);
 
         self.refresh_commandLinkButton.clicked.connect(self.Reinitialize_Tree_Table)
         self.sqlUser_lineEdit.returnPressed.connect(self.Reinitialize_Tree_Table)
         self.filter_lineEdit.textEdited.connect(self.Reinitialize_Tree_Table)
-        self.finished_pushButton.clicked.connect(self.close)
+        self.finished_pushButton.clicked.connect(self.Get_Data_For_Callback)
 
         self.meta_data = {}
         self.background_x_data, self.background_y_data = [], []
@@ -56,6 +59,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.Initialize_Tree_Table()
 
+        self.loaded_successfully = True
+
     ## Can only connect functions after previous things are initialized
     # self.my_pushButton.pressed.connect( lambda : self.signal_to_emit.emit( "You pushed the button" ) )
     # self.signal_to_emit.connect( self.Pop_Up_Message )
@@ -71,8 +76,8 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 error.setWindowTitle("Unable to connect to SQL Database")
                 error.exec_()
                 print(e)
-                self.quit()
-                return
+                #self.quit()
+                return False
         elif configuration_file['SQL_Server']['database_type'] == "QMYSQL":
             try:
                 self.sql_db = MySQLdb.connect(host=configuration_file['SQL_Server']['host_location'],
@@ -80,15 +85,16 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                                               user=configuration_file['SQL_Server']['username'],
                                               passwd=configuration_file['SQL_Server']['password'])
                 self.sql_db.ping(True)  # Maintain connection to avoid timing out
-            except:
+            except MySQLdb.Error as e:
                 error = QtWidgets.QMessageBox()
                 error.setIcon(QtWidgets.QMessageBox.Critical)
-                # error.setText( e )
+                error.setText( str(e) )
                 error.setWindowTitle("Unable to connect to SQL Database")
                 error.exec_()
                 # print( e )
-                self.quit()
-                return
+                #self.quit()
+                return False
+            return True
 
     # def Initialize_DB_Connection( self, database_type, host_location, database_name, username, password ):
     #	self.sql_db = QtSql.QSqlDatabase.addDatabase( database_type );
@@ -253,6 +259,13 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
     def Get_Sample_Data(self):
         return self.x_data, self.y_data
 
+    def Get_Data_For_Callback( self, callback_function ):
+        meta_data = self.Get_Meta_Data()
+        background = self.Get_Background_Data()
+        sample = self.Get_Sample_Data()
+        
+        self.Send_Data_To_Callback.emit( meta_data, Remove_Background(sample, background) )
+        self.close()
 
 def Find_Nearest_Value_In(look_in_x_y, x_value):
     idx = (np.abs(np.array(look_in_x_y[0]) - x_value)).argmin()
@@ -267,15 +280,15 @@ def Remove_Background(sample, background):
     return final_data
 
 
-def Get_Data():
-    app = QtWidgets.QApplication(sys.argv)
-    window = MyApp()
+
+def Get_Data( parent, callback_function ):
+    #app = QtWidgets.QApplication(sys.argv)
+    window = MyApp( parent )
+    if not window.loaded_successfully:
+        window.destroy()
+        return [], []
+
+    window.Send_Data_To_Callback.connect( callback_function )
     window.show()
     # sys.exit(app.exec_())
-    app.exec_()
-
-    meta_data = window.Get_Meta_Data()
-    background = window.Get_Background_Data()
-    sample = window.Get_Sample_Data()
-
-    return meta_data, Remove_Background(sample, background)
+    #app.exec_()

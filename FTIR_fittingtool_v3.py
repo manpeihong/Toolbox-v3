@@ -1702,16 +1702,20 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
             self.addlog('Cannot add more data file.', self.warningcolor1)
             return
 
-        meta_data, data = ftir_sql_browser.Get_Data()
+        ftir_sql_browser.Get_Data( self, self.addsqldata )
+
+    def addsqldata(self, meta_data, data):
+        if not meta_data or not data or len(data) == 0:
+            return
         if not data[0]:
-            self.addlog("Empty input! Make sure bakcground file is selected.", self.warningcolor1)
+            self.addlog("Empty input! Make sure background file is selected.", self.warningcolor1)
             return
         self.wavenumbers = data[0]
         self.transmissions = np.array(data[1]) * 100
         my_label = meta_data["sample_name"] + ' at T=' + str(
             meta_data["temperature_in_k"]) + ' K'  # "date(time)", "bias_in_v", "time(time)"
 
-        self.filepath.setText(text=my_label)
+        self.filepath.setText(my_label)
 
         self.fitline_data = self.plot_and_show(self.FTIRplot, self.fitline_data, 0, self.wavenumbers,
                                                self.transmissions, self.colororders[self.numberofdata],
