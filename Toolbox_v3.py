@@ -54,7 +54,13 @@ def Load_Available_Modules( main_window ):
             openAct.triggered.connect( lambda ignore, module_version=module.__version__, module_window=module_window, module_title=module_title: main_window.addModule( module_version, module_window, module_title ) )
             main_window.menuAdd.insertAction( first_non_module_action, openAct ) # insert openAct before first_non_module_action
 
-        #except ModuleNotFoundError:
+        except ModuleNotFoundError as e:
+            #module_available.append( False )
+            print( e )
+            blank_action = QAction( module_title, main_window )
+            blank_action.setDisabled( True )
+            main_window.menuAdd.insertAction( first_non_module_action, blank_action ) # insert blank_action before first_non_module_action
+
         except: # Something went wrong loading the module, probably it isn't present.  Leave an unclickable entry so people know about it
             #module_available.append( False )
             blank_action = QAction( module_title, main_window )
