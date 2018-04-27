@@ -1,6 +1,8 @@
 # Toolbox v3.06
 The third generation of the Toolbox.
 
+Please notice! v3.06 is not backward-compatible with previous versions due to code structure changes. 
+
 To get a detailed documentation of this software, please open the software and go to Menubar->Module->Document.
 
 FTIR fitting tool v3 and FTIR Commander are included to serve as demo. 
