@@ -2,7 +2,10 @@ import os
 import sys
 import time
 import math
+import traceback
 import configparser
+import matplotlib
+matplotlib.use("TkAgg")     # This needs to happen before import any other things from matplotlib.
 from random import randint
 from sys import platform as _platform
 import io
@@ -11,63 +14,12 @@ from PyQt5 import uic, QtGui
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+from Modules import modules     # Names of all existing modules are stored in a separate file called "Modules.py".
 
 import importlib
 
-thisversion = 0
+__thisversion__ = 0
 darkthemeavailable = 1
-
-
-def Load_Available_Modules( main_window ):
-    # All modules below can be successfully imported only if you have them in your file directory
-    # AND ALL STANDARD PACKAGES REQUIED FOR EACH MODULE ARE PRE_INSTALLED!
-    # If you are not sure what package need to be installed before running, remove the "try...except..." method for
-    # the specific module below, and the error message telling you what you are missing should pop up.
-    #module_short_names = ["MCT", "database", "backup", "XRD", "ftir", "kp", "grade", "FTIR_Commander"]
-
-    # (Module Name (file_name.py or folder.file_name.py, QWidget for module window, text title of module for titlebar)
-    modules = [("MCT_calculator_class_v3", "MCT_calculator_GUI", "MCT Calculator"),
-        ("MBEdatabase_class_v3", "MBEdatabase_GUI", "MBE database updater"),
-        ("File_backup", "File_backup_GUI", "File backup / LN2 order generator"),
-        ("XRD_analyzer_class_v3", "XRD_analyzer_GUI", "XRD data analyzer"),
-        ("FTIR_fittingtool_v3", "FTIR_fittingtool_GUI_v3", "FTIR Fitting Tool"),
-        ("Kp_method_v3", "Kp_method_GUI_v3", "Kp method"),
-        ("Grade_Analyzer_GUI_v3", "GradeAnalyer", "Grade Analyzer"),
-        ("FTIR_Commander.PyQt_FTIR_GUI", "FtirCommanderWindow", "FTIR Commander"),
-        ("IV_controller","IV_controller_GUI","IV controller")]
-
-    global thisversion # allows access to global variable in this function
-    keyboard_shortcut_index = 1
-    first_non_module_action = main_window.menuAdd.actions()[0] # We will put the new menu actions before this one
-    for module_name, window_type, module_title in modules:
-
-        try:
-            module = importlib.import_module( module_name ) # For example: import MCT_calculator_class_v3
-            thisversion += float(module.__version__) # Toolbox version is the sum of its components
-            #module_available.append( True )
-
-            module_window = getattr(module, window_type)
-
-            openAct = QAction( module_title, main_window )
-            openAct.setShortcuts( QKeySequence("Ctrl+" + str(keyboard_shortcut_index) ) )
-            #openAct.setStatusTip( "Tool tip message" )
-            openAct.triggered.connect( lambda ignore, module_version=module.__version__, module_window=module_window, module_title=module_title: main_window.addModule( module_version, module_window, module_title ) )
-            main_window.menuAdd.insertAction( first_non_module_action, openAct ) # insert openAct before first_non_module_action
-
-        except ModuleNotFoundError as e:
-            #module_available.append( False )
-            print( e )
-            blank_action = QAction( module_title, main_window )
-            blank_action.setDisabled( True )
-            main_window.menuAdd.insertAction( first_non_module_action, blank_action ) # insert blank_action before first_non_module_action
-
-        except: # Something went wrong loading the module, probably it isn't present.  Leave an unclickable entry so people know about it
-            #module_available.append( False )
-            blank_action = QAction( module_title, main_window )
-            blank_action.setDisabled( True )
-            main_window.menuAdd.insertAction( first_non_module_action, blank_action ) # insert blank_action before first_non_module_action
-
-        keyboard_shortcut_index += 1
 
 try:
     import qdarkstyle
@@ -75,7 +27,7 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.04" + "/" + "{}".format(thisversion)
+__version__ = "3.06" + "/" + "{:.2f}".format(__thisversion__)
 __emailaddress__ = "pman3@uic.edu"
 
 os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
@@ -88,14 +40,13 @@ Ui_help, QtBaseClass = uic.loadUiType(qthelpfile)
 qtguessfile = "guessnumbers.ui"
 Ui_guess, QtBaseClass = uic.loadUiType(qtguessfile)
 
-os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))
 config = configparser.ConfigParser()
 config.read('configuration.ini')
 colortheme = int(config["Settings"]["colortheme"])
 fullscreenonstart = int(config["Mainwindow"]["fullscreenonstart"])
 
 if colortheme + darkthemeavailable == 2:
-    #plt.style.use('dark_background')
+    # plt.style.use('dark_background')      # Default Matplotlib theme.
     plt.rcParams.update({
         "lines.color": "white",
         "patch.edgecolor": "white",
@@ -113,7 +64,6 @@ if colortheme + darkthemeavailable == 2:
 
 
 class welcome_GUI(QWidget, Ui_welcome):
-
     """Main FTIR fitting tool window."""
 
     def __init__(self):
@@ -123,7 +73,6 @@ class welcome_GUI(QWidget, Ui_welcome):
 
 
 class help_GUI(QWidget, Ui_help):
-
     """Main FTIR fitting tool window."""
 
     def __init__(self):
@@ -151,7 +100,7 @@ class guessnumbers_GUI(QDialog, Ui_guess):
         self.exclude = []
         self.buttonstart.clicked.connect(self.startgame)
         self.buttonenter.clicked.connect(self.enternumber)
-        self.shortcut = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Enter), self)
+        self.shortcut = QShortcut(QtGui.QKeySequence(Qt.Key_Enter), self)
         self.shortcut.activated.connect(self.enternumber)
 
     def startgame(self):
@@ -205,7 +154,7 @@ class guessnumbers_GUI(QDialog, Ui_guess):
     def randomnumber(self):
         while True:
             oknumber = 1
-            self.number = randint(0, math.pow(10, self.digit)-1)
+            self.number = randint(0, math.pow(10, self.digit) - 1)
             self.numberstring = "%0{}d".format(self.digit) % self.number
             for i in range(0, self.digit):
                 for j in range(0, self.digit):
@@ -226,7 +175,6 @@ class SystemTrayIcon(QSystemTrayIcon):
 
 
 class mainwindow(QMainWindow, Ui_main):
-
     """Optinal settings for customized result."""
 
     def __init__(self):
@@ -237,14 +185,15 @@ class mainwindow(QMainWindow, Ui_main):
         self.splitter.setSizes([800, 100])
         self.setStatusBar(self.statusbar)
         self.subwindowlist = []
-        self.clipboard = QLabel()   #In order to transfer info between subwindows, create a null label as clipboard.
+        self.clipboard = QLabel()  # In order to transfer info between subwindows, create a null label as clipboard.
         self.clipboard.setParent(self)
         self.clipboard.hide()
+        self.osdir = os.path.dirname(os.path.realpath(sys.argv[0]))
 
-        for i in range(0, 30):      # Set 30 subwindows max.
+        for i in range(0, 30):  # Set 30 subwindows max.
             sub = QMdiSubWindow()
-            sub.setAttribute(Qt.WA_DeleteOnClose)       # Important for closing tabs properly.
-            sub.setWindowIcon(QIcon())      # Remove the icon for each sub window.
+            sub.setAttribute(Qt.WA_DeleteOnClose)  # Important for closing tabs properly.
+            sub.setWindowIcon(QIcon())  # Remove the icon for each sub window.
             self.subwindowlist.append(sub)
 
         self.gui0 = welcome_GUI()
@@ -255,11 +204,10 @@ class mainwindow(QMainWindow, Ui_main):
         self.subwindowlist[0].showMaximized()
         self.subwindowlist[0].show()
 
-
         self.numberofgui = 0
 
         self.initialmenuitems("help", 1)
-        Load_Available_Modules( self )
+        self.Load_Available_Modules()
 
         if _platform == "darwin":
             self.status1.setText("﻿Welcome to the Toolbox. Press ⌘+M to see document/help.")
@@ -287,8 +235,9 @@ class mainwindow(QMainWindow, Ui_main):
         if _platform != "darwin":
             def __icon_activated(reason):
                 if reason == QSystemTrayIcon.DoubleClick:
-                    self.showFullScreen()   # Currently not working.
+                    self.showFullScreen()  # Currently not working.
                     self.show()
+
             self.trayIcon.activated.connect(__icon_activated)
 
         self.trayIcon.show()
@@ -301,6 +250,56 @@ class mainwindow(QMainWindow, Ui_main):
                 getattr(self, "open{}".format(item)).setDisabled(True)
         else:
             getattr(self, "open{}".format(item)).setDisabled(True)
+
+    def Load_Available_Modules(self):
+
+        """Import all available modules into the mainwindow."""
+
+        global __thisversion__, __version__  # allows access to global variable in this function
+
+        keyboard_shortcut_index = 1
+        first_non_module_action = self.menuAdd.actions()[0]  # We will put the new menu actions before this one
+        for module_name, window_type, module_title in modules:
+
+            try:
+                os.chdir(self.osdir)
+                module = importlib.import_module(module_name)  # For example: import MCT_calculator_class_v3
+                __thisversion__ += float(module.__version__)  # Toolbox version is the sum of its components
+                # module_available.append( True )
+
+                module_window = getattr(module, window_type)
+
+                openAct = QAction(module_title, self)
+                if keyboard_shortcut_index <= 9:
+                    openAct.setShortcuts(QKeySequence("Ctrl+" + str(keyboard_shortcut_index)))
+                else:
+                    openAct.setShortcuts(QKeySequence("Shift+Ctrl+" + str(keyboard_shortcut_index-9)))
+                # openAct.setStatusTip( "Tool tip message" )
+                openAct.triggered.connect(lambda ignore, module_version=module.__version__, module_window=module_window,
+                                                 module_title=module_title: self.addModule(module_version,
+                                                                                           module_window,
+                                                                                           module_title))
+                self.menuAdd.insertAction(first_non_module_action,
+                                          openAct)  # insert openAct before first_non_module_action
+
+            except ModuleNotFoundError as e:
+                # module_available.append( False )
+                print(e)
+                blank_action = QAction(module_title, self)
+                blank_action.setDisabled(True)
+                self.menuAdd.insertAction(first_non_module_action,
+                                          blank_action)  # insert blank_action before first_non_module_action
+
+            except:  # Something went wrong loading the module, probably it isn't present.  Leave an unclickable entry so people know about it
+                # module_available.append( False )
+                blank_action = QAction(module_title, self)
+                blank_action.setDisabled(True)
+                self.menuAdd.insertAction(first_non_module_action,
+                                          blank_action)  # insert blank_action before first_non_module_action
+
+            keyboard_shortcut_index += 1
+
+        __version__ = "3.06" + "/" + "{:.2f}".format(__thisversion__)
 
     def addhelp(self):
         self.numberofgui += 1
@@ -317,7 +316,7 @@ class mainwindow(QMainWindow, Ui_main):
         window.show()
         window.exec_()
 
-    def addModule( self, module_version, window_type, module_title):
+    def addModule(self, module_version, window_type, module_title):
         self.numberofgui += 1
         gui = window_type(self.subwindowlist[self.numberofgui], self)
         self.setupsubwindow(gui, module_title, module_version)
@@ -356,14 +355,14 @@ class mainwindow(QMainWindow, Ui_main):
         self.addlog('-' * 160, "blue")
 
     def addlog(self, string, fg="default", bg="default"):
-            item = QListWidgetItem(string)
-            if fg is not "default":
-                item.setForeground(QColor(fg))
-            if bg is not "default":
-                item.setBackground(QColor(bg))
-            self.listbox.addItem(item)
-            self.listbox.scrollToItem(item)
-            self.listbox.show()
+        item = QListWidgetItem(string)
+        if fg is not "default":
+            item.setForeground(QColor(fg))
+        if bg is not "default":
+            item.setBackground(QColor(bg))
+        self.listbox.addItem(item)
+        self.listbox.scrollToItem(item)
+        self.listbox.show()
 
 
 def main():
@@ -391,7 +390,7 @@ def main():
 
     def excepthook(excType, excValue, tracebackobj):
         """
-        Global function to catch unhandled exceptions in mainthread ONLY.
+        Global function to catch unhandled exceptions in main thread ONLY.
 
         @param excType exception type
         @param excValue exception value
