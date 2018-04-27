@@ -37,7 +37,8 @@ Added Dark theme. pip install qdarkstyle module is required to use dark theme.
 
 v. 3.04: Statusbar coorperates better with changing modules using tabs; 
 
-Now the size of log frame is adjustable. It can either hide or adjust to a certain height within very good amount of range. 
+Now the size of log frame is adjustable. It can either hide or adjust to a certain height within very good amount of range.
+
 v. 3.05: While we are waiting for Ryan's update, here are the small changes: 
 
 The color of Matplolib area has changed to match the dark theme. The main reason for that is the black background would hide some lines. 
