@@ -282,16 +282,9 @@ class mainwindow(QMainWindow, Ui_main):
                 self.menuAdd.insertAction(first_non_module_action,
                                           openAct)  # insert openAct before first_non_module_action
 
-            except ModuleNotFoundError as e:
+            except Exception as e:
                 # module_available.append( False )
                 print(e)
-                blank_action = QAction(module_title, self)
-                blank_action.setDisabled(True)
-                self.menuAdd.insertAction(first_non_module_action,
-                                          blank_action)  # insert blank_action before first_non_module_action
-
-            except:  # Something went wrong loading the module, probably it isn't present.  Leave an unclickable entry so people know about it
-                # module_available.append( False )
                 blank_action = QAction(module_title, self)
                 blank_action.setDisabled(True)
                 self.menuAdd.insertAction(first_non_module_action,
