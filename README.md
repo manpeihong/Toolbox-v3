@@ -49,7 +49,7 @@ Added Edit menu,  but no function is created.
 
 Slight change made to the module menu. 
              
-v. 3.06: Ryan's update is here. Create a new module is easy than ever. See instructions above. The structure of Toolbox_v3.py 
+v. 3.06: Ryan's update is here. Create a new module is easy than ever. See instructions above. The structure of Toolbox_v3.py has changed to be more flexible. 
 
 Several new tools are added. Now all tools are stored inside individual folders instead of the main folder. 
 
