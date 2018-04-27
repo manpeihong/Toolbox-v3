@@ -20,7 +20,7 @@ import MySQLdb
 try:
     from .ftir_sql_browser import Get_Data
 except:
-    print("Need to install mysql plugin, run: pip install mysqlclient. (Unsolved problem.)")
+    print("Need to install mysql plugin, run: pip install mysqlclient.")
 
 import configparser
 from PyQt5 import QtCore, QtGui, QtWidgets, uic

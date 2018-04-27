@@ -13,8 +13,8 @@ from PyQt5.QtWidgets import QAbstractScrollArea
 from PyQt5.QtCore import QSettings, QThread
 import numpy as np
 
-os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
-qtDesignerFile = "ftir_sql_browser.ui"  # GUI layout file.
+package_directory = os.path.dirname(os.path.abspath(__file__))
+qtDesignerFile = os.path.join(package_directory, "ftir_sql_browser.ui")  # GUI layout file.
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtDesignerFile)
 
 
