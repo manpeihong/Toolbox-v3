@@ -1,4 +1,4 @@
-# Toolbox v3.06
+# Toolbox v3.06b
 The third generation of the Toolbox.
 
 Please notice! v3.06 is not backward-compatible with previous versions due to code structure changes. 
@@ -55,5 +55,7 @@ v. 3.06: Ryan's update is here. Create a new module is easy than ever. The struc
 
 Several new tools are added. Now all tools are stored inside individual folders instead of the main folder. 
 
-The configuration.ini file now belongs to each module. Toolbox itself has a separate configuration.ini file.
+The configuration.ini file now belongs to each module. Toolbox itself has a separate configuration.ini file. ﻿
+
+Documentation is updated to include the documents from all tools.
              

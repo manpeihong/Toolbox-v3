@@ -27,7 +27,7 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.06" + "/" + "{:.2f}".format(__thisversion__)
+__version__ = "3.06b" + "/" + "{:.2f}".format(__thisversion__)
 __emailaddress__ = "pman3@uic.edu"
 
 os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
@@ -64,7 +64,7 @@ if colortheme + darkthemeavailable == 2:
 
 
 class welcome_GUI(QWidget, Ui_welcome):
-    """Main FTIR fitting tool window."""
+    """Welcome window."""
 
     def __init__(self):
         QWidget.__init__(self)
@@ -73,12 +73,56 @@ class welcome_GUI(QWidget, Ui_welcome):
 
 
 class help_GUI(QWidget, Ui_help):
-    """Main FTIR fitting tool window."""
+    """Documentation window."""
 
     def __init__(self):
         QWidget.__init__(self)
         Ui_help.__init__(self)
         self.setupUi(self)
+
+        self.currentindex = 0
+        self.numberofpages = 0
+
+        self.stackedWidget.removeWidget(self.page_2)
+        self.stackedWidget.setCurrentIndex(self.currentindex)
+
+        self.shortcut1 = QShortcut(QtGui.QKeySequence(Qt.Key_Right), self)
+        self.shortcut1.activated.connect(self.next)
+        self.shortcut2 = QShortcut(QtGui.QKeySequence(Qt.Key_Left), self)
+        self.shortcut2.activated.connect(self.previous)
+
+        self.load_all_help_files()
+
+    def load_all_help_files(self):
+        for module_name, window_type, module_title in modules:
+            folder_name = ""
+            for i in range(0, len(module_name)):
+                if module_name[i] == ".":
+                    folder_name = module_name[0:i]
+                    break
+            try:
+                path = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep + folder_name + os.sep + "help.txt"
+                textbox = QTextEdit()
+                f = open(path, "r")
+                text = f.readlines()
+                for line in text:
+                    textbox.append(line)
+                f.close()
+                textbox.verticalScrollBar().setValue(300)
+                self.stackedWidget.addWidget(textbox)
+                self.numberofpages += 1
+            except FileNotFoundError:
+                pass
+
+    def next(self):
+        if self.currentindex < self.numberofpages:
+            self.currentindex += 1
+            self.stackedWidget.setCurrentIndex(self.currentindex)
+
+    def previous(self):
+        if self.currentindex > 0:
+            self.currentindex -= 1
+            self.stackedWidget.setCurrentIndex(self.currentindex)
 
 
 class guessnumbers_GUI(QDialog, Ui_guess):
@@ -175,7 +219,7 @@ class SystemTrayIcon(QSystemTrayIcon):
 
 
 class mainwindow(QMainWindow, Ui_main):
-    """Optinal settings for customized result."""
+    """Main window of the Toolbox."""
 
     def __init__(self):
         QMainWindow.__init__(self)
@@ -292,7 +336,7 @@ class mainwindow(QMainWindow, Ui_main):
 
             keyboard_shortcut_index += 1
 
-        __version__ = "3.06" + "/" + "{:.2f}".format(__thisversion__)
+        __version__ = "3.06b" + "/" + "{:.2f}".format(__thisversion__)
 
     def addhelp(self):
         self.numberofgui += 1
