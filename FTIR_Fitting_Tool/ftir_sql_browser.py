@@ -1,8 +1,4 @@
-try:
-    import MySQLdb
-except:
-    print("Need to install mysql plugin, run: pip install mysqlclient.")
-    #exit()
+import MySQLdb
 import sqlite3
 import configparser
 import os
@@ -75,8 +71,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 error.setText(e)
                 error.setWindowTitle("Unable to connect to SQL Database")
                 error.exec_()
-                print(e)
-                #self.quit()
                 return False
         elif configuration_file['SQL_Server']['database_type'] == "QMYSQL":
             try:
@@ -91,8 +85,6 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 error.setText( str(e) )
                 error.setWindowTitle("Unable to connect to SQL Database")
                 error.exec_()
-                # print( e )
-                #self.quit()
                 return False
             return True
 

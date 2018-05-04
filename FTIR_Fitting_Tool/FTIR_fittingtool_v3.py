@@ -15,11 +15,13 @@ import numpy as np
 import traceback
 import sys
 from sys import platform as _platform
-import MySQLdb
 
+disableSQL = 0
 try:
+    import MySQLdb
     from .ftir_sql_browser import Get_Data
 except:
+    disableSQL = 1
     print("Need to install mysql plugin, run: pip install mysqlclient.")
 
 import configparser
@@ -1313,6 +1315,8 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         self.buttoncal.setText("Cal (\u03B1)")
         if self.cal_k_instead == 1:
             self.buttoncal.setText("Cal k")
+        if disableSQL == 1:
+            self.buttonsql.setEnabled(False)
         self.buttonmct.setText("MCT \u03B1")
         self.buttonsettings.clicked.connect(self.settings)
         self.buttonload.clicked.connect(self.load_structure)
