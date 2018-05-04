@@ -6,7 +6,6 @@ try:
 	import MySQLdb
 except:
 	print( "Need to install mysql plugin, run: pip install mysqlclient")
-	exit()
 import hashlib
 from datetime import datetime
 import re
