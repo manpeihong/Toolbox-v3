@@ -2,7 +2,6 @@ try:
 	import serial
 except:
 	print( 'Need to install PySerial, run: pip install PySerial' )
-	exit()
 
 import re
 import glob
