@@ -5,7 +5,7 @@ import sqlite3
 try:
 	import MySQLdb
 except:
-	print( "Need to install mysql plugin, run: pip install mysqlclient")
+	print( "Need to install mysql plugin, run: pip install mysqlclient.")
 import hashlib
 from datetime import datetime
 import re
@@ -16,10 +16,20 @@ from .Temperature_Controller import Temperature_Controller
 from .Omnic_Controller import Omnic_Controller
 from .Graph import Graph
 
-package_directory = os.path.dirname(os.path.abspath(__file__))
-
 __version__ = '1.00'
-qtCreatorFile = os.path.join( package_directory, "PyQt_FTIR_GUI.ui" ) # GUI layout file.
+
+def resource_path(relative_path):  # Define function to import external files when using PyInstaller.
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+qtCreatorFile = resource_path(os.path.join("FTIR_Commander", "PyQt_FTIR_GUI.ui" )) # GUI layout file.
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtCreatorFile)
 
@@ -41,7 +51,7 @@ class FtirCommanderWindow(QtWidgets.QWidget, Ui_MainWindow):
 
 	def Init_Subsystems( self ):
 		config = configparser.ConfigParser()
-		config.read( os.path.join( package_directory, "configuration.ini" ) )
+		config.read( resource_path(os.path.join("FTIR_Commander", "configuration.ini" ) ) )
 
 		self.Connect_To_SQL( config )
 		self.temp_controller = Temperature_Controller( config, parent=self )

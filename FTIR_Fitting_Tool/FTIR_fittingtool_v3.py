@@ -20,8 +20,9 @@ disableSQL = 0
 try:
     import MySQLdb
     from .ftir_sql_browser import Get_Data
-except:
+except Exception as e:
     disableSQL = 1
+    print(e)
     print("Need to install mysql plugin, run: pip install mysqlclient.")
 
 import configparser
@@ -34,16 +35,27 @@ from PyQt5.QtWidgets import *
 __version__ = '3.02'
 __emailaddress__ = "pman3@uic.edu"
 
-package_directory = os.path.dirname(os.path.abspath(__file__))
-qtFTIRfile = os.path.join(package_directory, "ftir_fittingtoolv3_ui.ui")
+
+def resource_path(relative_path):  # Define function to import external files when using PyInstaller.
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+qtFTIRfile = resource_path(os.path.join("FTIR_Fitting_Tool", "ftir_fittingtoolv3_ui.ui"))
 Ui_FTIR, QtBaseClass = uic.loadUiType(qtFTIRfile)
-qtloadstrufile = os.path.join(package_directory, "FTIR_loadstru.ui")
+qtloadstrufile = resource_path(os.path.join("FTIR_Fitting_Tool", "FTIR_loadstru.ui"))
 Ui_loadstru, QtBaseClass = uic.loadUiType(qtloadstrufile)
-qtsettingsfile = os.path.join(package_directory, "FTIR_settings.ui")
+qtsettingsfile = resource_path(os.path.join("FTIR_Fitting_Tool", "FTIR_settings.ui"))
 Ui_settings_FTIR, QtBaseClass = uic.loadUiType(qtsettingsfile)
-qthelpfile = os.path.join(package_directory, "FTIR_help.ui")
+qthelpfile = resource_path(os.path.join("FTIR_Fitting_Tool", "FTIR_help.ui"))
 Ui_help_FTIR, QtBaseClass = uic.loadUiType(qthelpfile)
-qtMCTafile = os.path.join(package_directory, "FTIR_MCTa.ui")
+qtMCTafile = resource_path(os.path.join("FTIR_Fitting_Tool", "FTIR_MCTa.ui"))
 Ui_MCTa, QtBaseClass = uic.loadUiType(qtMCTafile)
 
 
@@ -73,6 +85,9 @@ class FIT_FTIR:
         self.status2 = self.root.status2
         self.progress_callback = progress_callback
         self.wn_callback = wn_callback
+        self.warningcolor1 = self.root.warningcolor1
+        self.warningcolor2 = self.root.warningcolor2
+        self.warningcolor3 = self.root.warningcolor3
 
         self.n_list = []
         self.k_list = []
@@ -127,24 +142,20 @@ class FIT_FTIR:
                           ("Al_n.csv", "wl_n_Al", "n_Al"),
                           ("Si_k.csv", "wl_k_Si", "k_Si")]
 
-        self.osdir = os.getcwd()
-        self.n_dir = os.getcwd() + "/Refractive_Index"
-
-        os.chdir(self.n_dir)
-
         for (file_name, x_data, y_data) in reference_info:
             setattr(self, x_data, [])
             setattr(self, y_data, [])
-            with open(file_name, 'r') as f:
-                reader = csv.reader(f, delimiter=',')
-                for row in reader:
-                    try:
-                        getattr(self, x_data).append(float(row[0]))
-                        getattr(self, y_data).append(float(row[1]))
-                    except ValueError:
-                        pass
-
-        os.chdir(self.osdir)
+            try:
+                with open(resource_path(os.path.join("Refractive_Index", file_name)), 'r') as f:
+                    reader = csv.reader(f, delimiter=',')
+                    for row in reader:
+                        try:
+                            getattr(self, x_data).append(float(row[0]))
+                            getattr(self, y_data).append(float(row[1]))
+                        except ValueError:
+                            pass
+            except Exception as e:
+                self.addlog("Critical error! {} contains invalid character.".format(file_name), self.warningcolor1)
 
     def adjust_d_on_temp(self):
 
@@ -1102,11 +1113,8 @@ class FTIRsettings(QDialog, Ui_settings_FTIR):
         self.cal_k_instead = calk
         self.datalist = ["Transmission data", "Reflection data", "Absorption data"]
         self.index1 = 0
-        os.chdir(os.path.dirname(os.path.abspath(__file__)))
         self.config = configparser.ConfigParser()
-        self.config.read('configuration.ini')
-
-        os.chdir(self.root.osdir)
+        self.config.read(resource_path(os.path.join("FTIR_Fitting_Tool", 'configuration.ini')))
 
         self.dataoption.addItems(self.datalist)
         self.dataoption.setCurrentIndex(self.data_loaded)
@@ -1165,8 +1173,7 @@ class FTIRsettings(QDialog, Ui_settings_FTIR):
         self.data_loaded = self.index1
 
         if self.checkbox_rem.isChecked() is True:
-            os.chdir(os.path.dirname(os.path.abspath(__file__)))
-            cfgfile = open('configuration.ini', 'w')
+            cfgfile = open(resource_path(os.path.join("FTIR_Fitting_Tool", 'configuration.ini')), 'w')
             self.config.set("Settings", "blindcalculation", str(self.blindcal))
             self.config.set("Settings", "showreflection", str(self.displayreflection))
             self.config.set("Settings", "showabsorption", str(self.displayabsorption))
@@ -1176,7 +1183,6 @@ class FTIRsettings(QDialog, Ui_settings_FTIR):
 
             self.config.write(cfgfile)
             cfgfile.close()
-            os.chdir(self.root.osdir)
 
     def buttonCancelfuncton(self):
         pass
@@ -1285,7 +1291,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         self.fitline_absorb = None
         self.fitline_absorb_MCT = None
 
-        self.osdir = os.path.dirname(os.path.realpath(sys.argv[0]))
+        self.osdir = os.path.dirname(os.path.abspath(__file__))
         self.totaltime = 0
         self.programbusy = 0
         self.needmorehelp = 0
@@ -1293,9 +1299,8 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         self.progress_var = 0
         self.wn_beingcalculated = 0
 
-        os.chdir(os.path.dirname(os.path.abspath(__file__)))
         self.config = configparser.ConfigParser()
-        self.config.read('configuration.ini')
+        self.config.read(resource_path(os.path.join("FTIR_Fitting_Tool", 'configuration.ini')))
 
         self.blindcal = int(self.config["Settings"]["blindcalculation"])
         self.displayreflection = int(self.config["Settings"]["showreflection"])
@@ -1303,8 +1308,6 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         self.data_loaded = int(self.config["Settings"]["data_loaded"])
         self.cal_k_instead = int(self.config["Settings"]["cal_k_instead"])
         self.use_ideal_k = int(self.config["Settings"]["use_ideal_k"])
-
-        os.chdir(self.osdir)
 
         self.warningcolor1 = 'red'
         self.warningcolor2 = 'orange'
@@ -1796,7 +1799,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
             else:
                 return
 
-        self.structure_dir = self.osdir + "/Preload_Structure"
+        self.structure_dir = resource_path("Preload_Structure")
 
         filelist = []
         for item in os.listdir(self.structure_dir):

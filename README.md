@@ -1,4 +1,4 @@
-# Toolbox v3.06b
+# Toolbox v3.07
 The third generation of the Toolbox.
 
 Please notice! v3.06 is not backward-compatible with previous versions due to code structure changes. 
@@ -58,4 +58,14 @@ Several new tools are added. Now all tools are stored inside individual folders 
 The configuration.ini file now belongs to each module. Toolbox itself has a separate configuration.ini file. ﻿
 
 Documentation is updated to include the documents from all tools.
+﻿
+v. 3.07: 
+
+A few changes to optimize the file path handling. Now the program is ready to be packaged into an executable app using pyinstaller (tested on Mac OS);
+
+Fixed bugs where some n/k csv file has invlid characters; 
+
+Fixed bugs where some csv readers do not work as exprected; 
+
+Improved error messages when import failed. 
              

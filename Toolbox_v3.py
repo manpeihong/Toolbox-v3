@@ -27,21 +27,32 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.06b" + "/" + "{:.2f}".format(__thisversion__)
+__version__ = "3.07" + "/" + "{:.2f}".format(__thisversion__)
 __emailaddress__ = "pman3@uic.edu"
 
-os.chdir(os.path.dirname(os.path.realpath(sys.argv[0])))  # Change the working directory to current directory.
-qtmainfile = "mainwindow.ui"  # GUI layout file.
+
+def resource_path(relative_path):   # Define function to import external files when using PyInstaller.
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+qtmainfile = resource_path("mainwindow.ui")  # GUI layout file.
 Ui_main, QtBaseClass = uic.loadUiType(qtmainfile)
-qtwelcomefile = "welcome.ui"
+qtwelcomefile = resource_path("welcome.ui")
 Ui_welcome, QtBaseClass = uic.loadUiType(qtwelcomefile)
-qthelpfile = "help.ui"
+qthelpfile = resource_path("help.ui")
 Ui_help, QtBaseClass = uic.loadUiType(qthelpfile)
-qtguessfile = "guessnumbers.ui"
+qtguessfile = resource_path("guessnumbers.ui")
 Ui_guess, QtBaseClass = uic.loadUiType(qtguessfile)
 
 config = configparser.ConfigParser()
-config.read('configuration.ini')
+config.read(resource_path('configuration.ini'))
 colortheme = int(config["Settings"]["colortheme"])
 fullscreenonstart = int(config["Mainwindow"]["fullscreenonstart"])
 
@@ -101,9 +112,9 @@ class help_GUI(QWidget, Ui_help):
                     folder_name = module_name[0:i]
                     break
             try:
-                path = os.path.dirname(os.path.realpath(sys.argv[0])) + os.sep + folder_name + os.sep + "help.txt"
+                path = resource_path(os.path.join(folder_name, "help.txt"))
                 textbox = QTextEdit()
-                f = open(path, "r")
+                f = open(path, "r", encoding='utf-8')
                 text = f.readlines()
                 for line in text:
                     textbox.append(line)
@@ -225,14 +236,13 @@ class mainwindow(QMainWindow, Ui_main):
         QMainWindow.__init__(self)
         Ui_main.__init__(self)
         self.setupUi(self)
-        self.setWindowIcon(QIcon('icon.icns'))
+        self.setWindowIcon(QIcon(resource_path('icon.icns')))
         self.splitter.setSizes([800, 100])
         self.setStatusBar(self.statusbar)
         self.subwindowlist = []
         self.clipboard = QLabel()  # In order to transfer info between subwindows, create a null label as clipboard.
         self.clipboard.setParent(self)
         self.clipboard.hide()
-        self.osdir = os.path.dirname(os.path.realpath(sys.argv[0]))
 
         for i in range(0, 30):  # Set 30 subwindows max.
             sub = QMdiSubWindow()
@@ -266,7 +276,7 @@ class mainwindow(QMainWindow, Ui_main):
         self.authorLabel.mousePressEvent = self.addguess
 
         # System Tray
-        self.trayIcon = QSystemTrayIcon(QIcon('icon.icns'), self)
+        self.trayIcon = QSystemTrayIcon(QIcon(resource_path('icon.icns')), self)
         self.menu = QMenu()
         self.exitAction = self.menu.addAction("Exit")
 
@@ -306,7 +316,6 @@ class mainwindow(QMainWindow, Ui_main):
         for module_name, window_type, module_title in modules:
 
             try:
-                os.chdir(self.osdir)
                 module = importlib.import_module(module_name)  # For example: import MCT_calculator_class_v3
                 __thisversion__ += float(module.__version__)  # Toolbox version is the sum of its components
                 # module_available.append( True )
@@ -336,7 +345,7 @@ class mainwindow(QMainWindow, Ui_main):
 
             keyboard_shortcut_index += 1
 
-        __version__ = "3.06b" + "/" + "{:.2f}".format(__thisversion__)
+        __version__ = "3.07" + "/" + "{:.2f}".format(__thisversion__)
 
     def addhelp(self):
         self.numberofgui += 1
@@ -404,7 +413,7 @@ class mainwindow(QMainWindow, Ui_main):
 
 def main():
     app = QApplication(sys.argv)
-    splash_pix = QPixmap('bg.png')
+    splash_pix = QPixmap(resource_path('bg.png'))
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
     splash.show()
