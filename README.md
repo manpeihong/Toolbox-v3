@@ -58,7 +58,7 @@ Several new tools are added. Now all tools are stored inside individual folders 
 The configuration.ini file now belongs to each module. Toolbox itself has a separate configuration.ini file. ﻿
 
 Documentation is updated to include the documents from all tools.
-﻿
+
 v. 3.07: 
 
 A few changes to optimize the file path handling. Now the program is ready to be packaged into an executable app using pyinstaller (tested on Mac OS);
