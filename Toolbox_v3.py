@@ -236,7 +236,10 @@ class mainwindow(QMainWindow, Ui_main):
         QMainWindow.__init__(self)
         Ui_main.__init__(self)
         self.setupUi(self)
-        self.setWindowIcon(QIcon(resource_path('icon.icns')))
+        if _platform == "darwin":
+            self.setWindowIcon(QIcon(resource_path('icon.icns')))
+        else:
+            self.setWindowIcon(QIcon(resource_path('icon.ico')))
         self.splitter.setSizes([800, 100])
         self.setStatusBar(self.statusbar)
         self.subwindowlist = []
@@ -276,7 +279,10 @@ class mainwindow(QMainWindow, Ui_main):
         self.authorLabel.mousePressEvent = self.addguess
 
         # System Tray
-        self.trayIcon = QSystemTrayIcon(QIcon(resource_path('icon.icns')), self)
+        if _platform == "darwin":
+            self.trayIcon = QSystemTrayIcon(QIcon(resource_path('icon.icns')), self)
+        else:
+            self.trayIcon = QSystemTrayIcon(QIcon(resource_path('icon.ico')), self)
         self.menu = QMenu()
         self.exitAction = self.menu.addAction("Exit")
 
