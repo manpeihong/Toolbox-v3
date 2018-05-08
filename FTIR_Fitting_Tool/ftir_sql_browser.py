@@ -9,8 +9,19 @@ from PyQt5.QtWidgets import QAbstractScrollArea
 from PyQt5.QtCore import QSettings, QThread
 import numpy as np
 
-package_directory = os.path.dirname(os.path.abspath(__file__))
-qtDesignerFile = os.path.join(package_directory, "ftir_sql_browser.ui")  # GUI layout file.
+
+def resource_path(relative_path):  # Define function to import external files when using PyInstaller.
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    try:
+        # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+qtDesignerFile = resource_path(os.path.join("FTIR_Fitting_Tool", "ftir_sql_browser.ui"))  # GUI layout file.
 Ui_MainWindow, QtBaseClass = uic.loadUiType(qtDesignerFile)
 
 
@@ -26,7 +37,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         config = configparser.ConfigParser()
-        config.read('configuration.ini')
+        config.read(resource_path(os.path.join("FTIR_Fitting_Tool", 'configuration.ini')))
 
         if not self.Connect_To_SQL(config):
             return
