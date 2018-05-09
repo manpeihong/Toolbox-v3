@@ -420,8 +420,27 @@ class mainwindow(QMainWindow, Ui_main):
 def main():
     app = QApplication(sys.argv)
     splash_pix = QPixmap(resource_path('bg.png'))
+    logo = QPixmap(resource_path('MPL_UIC.png'))
+    logo = logo.scaled(150, 46, transformMode=Qt.SmoothTransformation)
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
+
+    vbox = QVBoxLayout()
+    vbox.setContentsMargins(15, 190, 15, 50)
+    font = QFont("Helvetica", 20)
+    lb00 = QLabel("Toolbox v{}".format(__version__[0:4]))
+    lb00.setAlignment(Qt.AlignCenter)
+    lb00.setFont(font)
+    lb01 = QLabel("The only one you need.")
+    lb01.setAlignment(Qt.AlignCenter)
+    lb02 = QLabel()
+    lb02.setAlignment(Qt.AlignCenter)
+    lb02.setPixmap(logo)
+    vbox.addWidget(lb00)
+    vbox.addWidget(lb01)
+    vbox.addWidget(lb02)
+    splash.setLayout(vbox)
+
     splash.show()
     app.processEvents()
 
