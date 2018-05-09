@@ -1202,6 +1202,7 @@ class FTIRMCTa(QDialog, Ui_MCTa):
         self.index1 = 0
         self.method = 0
         self.x = 0.21
+        self.saveornot = 0
         self.methodlist = ["Chu", "Schacham and Finkman", "Yong"]
 
         self.entry_x.setText(str(self.x))
@@ -1217,6 +1218,8 @@ class FTIRMCTa(QDialog, Ui_MCTa):
     def buttonOkayfuncton(self):
         self.method = self.index1
         self.x = float(self.entry_x.text())
+        if self.checksave.isChecked() is True:
+            self.saveornot = 1
 
     def buttonCancelfuncton(self):
         pass
@@ -1796,6 +1799,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
             loadornot = loadornotfunc()
             if loadornot == 1:
                 self.clearalldata()
+                return  # There should't be anything after self.clearalldata because the mainwindow widget has changed.
             else:
                 return
 
@@ -1893,6 +1897,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         if yesorno == 1:
             comp = window_MCT_FTIR.x
             method = window_MCT_FTIR.method
+            saveornot = window_MCT_FTIR.saveornot
 
             methodlist = ["Chu", "Schacham and Finkman", "Yong"]
 
@@ -1921,29 +1926,30 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
                                                                             self.colororders2[self.numberofdata2]))
             self.numberofdata2 += 1
 
-            msg = QMessageBox()
-            msg.setIcon(QMessageBox.Information)
+            if saveornot == 1:
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Information)
 
-            msg.setText("Save the result as a .csv file?")
-            msg.setWindowTitle("Save?")
-            msg.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
+                msg.setText("Save the result as a .csv file?")
+                msg.setWindowTitle("Save?")
+                msg.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
 
-            result = msg.exec_()
-            if result == QMessageBox.Ok:
-                dlg = QFileDialog()
-                dlg.setFileMode(QFileDialog.AnyFile)
-                saveascsv = dlg.getSaveFileName(self, 'Save file', self.osdir, "CSV files (*.CSV *.csv)")
+                result = msg.exec_()
+                if result == QMessageBox.Ok:
+                    dlg = QFileDialog()
+                    dlg.setFileMode(QFileDialog.AnyFile)
+                    saveascsv = dlg.getSaveFileName(self, 'Save file', self.osdir, "CSV files (*.CSV *.csv)")
 
-                if saveascsv[0] == "":
+                    if saveascsv[0] == "":
+                        return
+                    f = open(saveascsv[0], "w")
+                    for i in range(0, len(self.wavenumbers)):
+                        f.write("{0:.6e},{1:.6e}\n".format(self.wavenumbers_MCT[i], self.absorptions[i]))
+                    f.close()
+
+                    self.addlog('Saved the file to: {}'.format(saveascsv[0]))
+                else:
                     return
-                f = open(saveascsv[0], "w")
-                for i in range(0, len(self.wavenumbers)):
-                    f.write("{0:.6e},{1:.6e}\n".format(self.wavenumbers_MCT[i], self.absorptions[i]))
-                f.close()
-
-                self.addlog('Saved the file to: {}'.format(saveascsv[0]))
-            else:
-                return
         else:
             return
 
