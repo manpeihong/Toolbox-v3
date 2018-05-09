@@ -432,6 +432,8 @@ def main():
     window.setWindowTitle("Toolbox v{}".format(__version__))
     if fullscreenonstart == 1:
         window.showFullScreen()
+    else:
+        window.showMaximized()
     if colortheme + darkthemeavailable == 2:
         app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
