@@ -527,9 +527,9 @@ class FIT_FTIR:
         reflection = (Rs + Rp) / 2 * 100 * 1 + (Ts + Tp) / 2 * 100 * (1 - self.scalefactor)
         absorption = (As + Ap) / 2 * 100 * 1
 
-        self.allresult.append(float(transmission))
-        self.allresult.append(float(reflection))
-        self.allresult.append(float(absorption))
+        self.allresult.append(float(np.real(transmission)))
+        self.allresult.append(float(np.real(reflection)))
+        self.allresult.append(float(np.real(absorption)))
 
         return self.allresult
 
