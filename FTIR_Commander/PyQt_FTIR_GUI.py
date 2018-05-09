@@ -116,7 +116,13 @@ class FtirCommanderWindow(QtWidgets.QWidget, Ui_MainWindow):
 			error.setText( e )
 			error.setWindowTitle( "Unable to connect to SQL Database" )
 			error.exec_()
-			print( e )
+			return
+		except MySQLdb.Error as e:
+			error = QtWidgets.QMessageBox()
+			error.setIcon( QtWidgets.QMessageBox.Critical )
+			error.setText( str(e) )
+			error.setWindowTitle( "Unable to connect to SQL Database" )
+			error.exec_()
 			return
 
 		Create_Table_If_Needed( self.sql_conn )
