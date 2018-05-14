@@ -1752,7 +1752,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
 
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
-        saveascsv = dlg.getSaveFileName(self, 'Save file', self.osdir, "CSV files (*.CSV *.csv)")
+        saveascsv = dlg.getSaveFileName(self, 'Save file', '', "CSV files (*.CSV *.csv)")
 
         if saveascsv[0] == "":
             return
@@ -1866,7 +1866,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
 
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
-        saveascsv = dlg.getSaveFileName(self, 'Save file', self.osdir, "CSV files (*.CSV *.csv)")
+        saveascsv = dlg.getSaveFileName(self, 'Save file', '', "CSV files (*.CSV *.csv)")
 
         if saveascsv[0] == "":
             return
@@ -1938,7 +1938,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
                 if result == QMessageBox.Ok:
                     dlg = QFileDialog()
                     dlg.setFileMode(QFileDialog.AnyFile)
-                    saveascsv = dlg.getSaveFileName(self, 'Save file', self.osdir, "CSV files (*.CSV *.csv)")
+                    saveascsv = dlg.getSaveFileName(self, 'Save file', '', "CSV files (*.CSV *.csv)")
 
                     if saveascsv[0] == "":
                         return
@@ -2377,7 +2377,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         if result == QMessageBox.Ok:
             dlg = QFileDialog()
             dlg.setFileMode(QFileDialog.AnyFile)
-            saveascsv = dlg.getSaveFileName(self, 'Save file', self.osdir, "CSV files (*.CSV *.csv)")
+            saveascsv = dlg.getSaveFileName(self, 'Save file', '', "CSV files (*.CSV *.csv)")
 
             if saveascsv[0] == "":
                 return
