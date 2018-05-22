@@ -1,4 +1,4 @@
-# Toolbox v3.07
+# Toolbox v3.08
 The third generation of the Toolbox.
 
 Please notice! v3.06 is not backward-compatible with previous versions due to code structure changes. 
@@ -70,4 +70,10 @@ Fixed bugs where some csv readers do not work as exprected;
 Improved error messages when import failed. 
 
 Added different icon format for Mac Os/Windows.
+
+v. 3.08: 
+
+Added addlog() and addlog_with_button() into the main toolbox.py file as standard functions.
+ 
+See example in the document file. 
              
