@@ -1253,6 +1253,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
         self.status1 = self.masterroot.status1
         self.status2 = self.masterroot.status2
         self.progressbar = self.masterroot.progressbar
+        self.addlog = self.masterroot.addlog
         self.wavenumbers = []
         self.wavenumbers_cut = []
         self.transmissions = []
@@ -2533,7 +2534,7 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
             else:
                 return 0
 
-        if self.layernumber != 0:
+        if self.layernumber != 0 or self.wavenumbers != 0:
             clearornot = clearornotfunc()
             if clearornot == 1:
                 for i in reversed(range(self.maingrid.count())):
@@ -2547,12 +2548,3 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
             else:
                 pass
 
-    def addlog(self, string, fg="default", bg="default"):
-            item = QListWidgetItem(string)
-            if fg is not "default":
-                item.setForeground(QColor(fg))
-            if bg is not "default":
-                item.setBackground(QColor(bg))
-            self.listbox.addItem(item)
-            self.listbox.scrollToItem(item)
-            self.listbox.show()

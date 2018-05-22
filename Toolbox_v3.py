@@ -27,7 +27,7 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.07" + "/" + "{:.2f}".format(__thisversion__)
+__version__ = "3.08" + "/" + "{:.2f}".format(__thisversion__)
 __emailaddress__ = "pman3@uic.edu"
 
 
@@ -351,7 +351,7 @@ class mainwindow(QMainWindow, Ui_main):
 
             keyboard_shortcut_index += 1
 
-        __version__ = "3.07" + "/" + "{:.2f}".format(__thisversion__)
+        __version__ = "3.08" + "/" + "{:.2f}".format(__thisversion__)
 
     def addhelp(self):
         self.numberofgui += 1
@@ -406,7 +406,50 @@ class mainwindow(QMainWindow, Ui_main):
         self.addlog("This is the log file.", "blue")
         self.addlog('-' * 160, "blue")
 
+    def addlog_with_button(self, string, buttontext, fg="default", bg="default"):
+
+        """Add a line to the log file with some description and a button.
+        This function will return the button so it can be click.connect to functions."""
+
+        item = QListWidgetItem()
+        # Create widget
+        widget = QWidget()
+        widgetText = QLabel("<font size=3>"+string+"</font>")
+        if fg is not "default":
+            widgetText.setForeground(QColor(fg))
+        if bg is not "default":
+            widgetText.setBackground(QColor(bg))
+        widgetText.setFixedHeight(17)
+        widgetText.setWindowFlags(Qt.FramelessWindowHint)
+        widgetText.setAttribute(Qt.WA_TranslucentBackground)
+        widgetButton = QPushButton(buttontext)
+        widgetButton.setFixedHeight(17)
+        widgetButton.setStyleSheet("padding: 1px;")
+        widgetLayout = QHBoxLayout()
+        widgetLayout.setContentsMargins(5, 0, 5, 0)
+        widgetLayout.addWidget(widgetText)
+        widgetLayout.addWidget(widgetButton)
+        widgetLayout.addStretch()
+
+        widgetLayout.setSizeConstraint(QLayout.SetFixedSize)
+        widget.setLayout(widgetLayout)
+        widget.setFixedHeight(17)
+        widget.setWindowFlags(Qt.FramelessWindowHint)
+        widget.setAttribute(Qt.WA_TranslucentBackground)
+        item.setSizeHint(widget.sizeHint())
+
+        # Add widget to QListWidget
+        self.listbox.addItem(item)
+        self.listbox.setItemWidget(item, widget)
+        self.listbox.scrollToItem(item)
+        self.listbox.show()
+
+        return widgetButton
+
     def addlog(self, string, fg="default", bg="default"):
+
+        """Add a simple text log to the log frame."""
+
         item = QListWidgetItem(string)
         if fg is not "default":
             item.setForeground(QColor(fg))
