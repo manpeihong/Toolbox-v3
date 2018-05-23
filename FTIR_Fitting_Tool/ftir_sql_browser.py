@@ -79,7 +79,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
             except sqlite3.Error as e:
                 error = QtWidgets.QMessageBox()
                 error.setIcon(QtWidgets.QMessageBox.Critical)
-                error.setText(e)
+                error.setText( str(e) )
                 error.setWindowTitle("Unable to connect to SQL Database")
                 error.exec_()
                 return False
@@ -97,28 +97,7 @@ class MyApp(QtWidgets.QMainWindow, Ui_MainWindow):
                 error.setWindowTitle("Unable to connect to SQL Database")
                 error.exec_()
                 return False
-            return True
-
-    # def Initialize_DB_Connection( self, database_type, host_location, database_name, username, password ):
-    #	self.sql_db = QtSql.QSqlDatabase.addDatabase( database_type );
-    #	if database_type == "QMYSQL":
-    #		self.sql_db.setConnectOptions( "MYSQL_OPT_RECONNECT=1" );
-
-    #	if not host_location:
-    #		self.sql_db.setHostName( host_location )
-    #	self.sql_db.setDatabaseName( database_name )
-    #	if not username:
-    #		self.sql_db.setUserName( username )
-    #	if not password:
-    #		self.sql_db.setPassword( password )
-    #	sql_worked = self.sql_db.open()
-    #	if sql_worked:
-    #		print( "Connected to {} Database {}".format( host_location, database_name ) )
-    #	else:
-    #		problem = self.sql_db.lastError()
-    #		print( "Error with SQL Connection: ", problem )
-
-    #	return sql_worked
+        return True
 
     def Initialize_Tree_Table(self):
         self.Reinitialize_Tree_Table()
