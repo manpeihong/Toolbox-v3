@@ -1686,6 +1686,8 @@ class FTIR_fittingtool_GUI_v3(QWidget, Ui_FTIR):
             with open(file[0], 'r') as f:
                 reader = csv.reader(f, delimiter=',')
                 for row in reader:
+                    if len( row ) < 2:
+                        continue
                     try:
                         self.wavenumbers.append(float(row[0]))
                         self.transmissions.append(float(row[1]))
