@@ -8,7 +8,7 @@ modules = [
     ("Kp_Method.Kp_method_v3", "Kp_method_GUI_v3", "Kp method"),
     ("Grade_Analyzer.Grade_Analyzer_GUI_v3", "GradeAnalyer", "Grade Analyzer"),
     ("FTIR_Commander.PyQt_FTIR_GUI", "FtirCommanderWindow", "FTIR Commander"),
-    ("IV_Controller.IV_controller", "IV_controller_GUI", "IV controller")
+    ("IV_Controller.IV_controller", "IV_controller_GUI", "IV controller"),
     ("Microscope_Assistant.Main_Window", "Microscope_Assistant_GUI", "Microscope Assistant")
 ]
 # Module Name (file_name.py or folder.file_name.py), QWidget for module window, text title of module for titlebar
