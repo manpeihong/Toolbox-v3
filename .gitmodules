@@ -1,0 +1,3 @@
+[submodule "FTIR_Commander"]
+	path = FTIR_Commander
+	url = https://github.com/Ryan3141/FTIR_Commander.git
