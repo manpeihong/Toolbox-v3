@@ -1,6 +1,7 @@
 modules = [
     ("MCT_Calculator.MCT_calculator_class_v3", "MCT_calculator_GUI", "MCT Calculator"),
     ("Recipe_Designer.Recipe_designer", "Recipe_designer_GUI", "Recipe_designer"),
+    ("MBE_Assistant.MBE_Assistant", "MBE_Assistant_GUI", "MBE Assistant"),
     ("MBE_Database.MBEdatabase_class_v3", "MBEdatabase_GUI", "MBE database updater"),
     ("File_Backup.File_backup", "File_backup_GUI", "File backup / LN2 order generator"),
     ("XRD_Analyzer.XRD_analyzer_class_v3", "XRD_analyzer_GUI", "XRD data analyzer"),
@@ -9,7 +10,8 @@ modules = [
     ("Grade_Analyzer.Grade_Analyzer_GUI_v3", "GradeAnalyer", "Grade Analyzer"),
     ("FTIR_Commander.PyQt_FTIR_GUI", "FtirCommanderWindow", "FTIR Commander"),
     ("IV_Controller.IV_controller", "IV_controller_GUI", "IV controller"),
-    ("Microscope_Assistant.Main_Window", "Microscope_Assistant_GUI", "Microscope Assistant")
+    ("Microscope_Assistant.Main_Window", "Microscope_Assistant_GUI", "Microscope Assistant"),
+    ("ImageM.ImageM", "ImageM_GUI", "Image M")
 ]
 # Module Name (file_name.py or folder.file_name.py), QWidget for module window, text title of module for titlebar
 

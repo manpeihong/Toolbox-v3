@@ -27,7 +27,7 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.08" + "/" + "{:.2f}".format(__thisversion__)
+__version__ = "3.09" + "/" + "{:.2f}".format(__thisversion__)
 __emailaddress__ = "pman3@uic.edu"
 
 
@@ -56,22 +56,24 @@ config.read(resource_path('configuration.ini'))
 colortheme = int(config["Settings"]["colortheme"])
 fullscreenonstart = int(config["Mainwindow"]["fullscreenonstart"])
 
-if colortheme + darkthemeavailable == 2:
-    # plt.style.use('dark_background')      # Default Matplotlib theme.
-    plt.rcParams.update({
-        "lines.color": "white",
-        "patch.edgecolor": "white",
-        "text.color": "white",
-        "axes.facecolor": "#31363b",
-        "axes.edgecolor": "lightgray",
-        "axes.labelcolor": "white",
-        "xtick.color": "white",
-        "ytick.color": "white",
-        "grid.color": "lightgray",
-        "figure.facecolor": "#31363b",
-        "figure.edgecolor": "#31363b",
-        "savefig.facecolor": "#31363b",
-        "savefig.edgecolor": "#31363b"})
+if darkthemeavailable == 1:
+    if colortheme == 1:
+        plt.rcParams.update({
+            "lines.color": "white",
+            "patch.edgecolor": "white",
+            "text.color": "white",
+            "axes.facecolor": "#31363b",
+            "axes.edgecolor": "lightgray",
+            "axes.labelcolor": "white",
+            "xtick.color": "white",
+            "ytick.color": "white",
+            "grid.color": "lightgray",
+            "figure.facecolor": "#31363b",
+            "figure.edgecolor": "#31363b",
+            "savefig.facecolor": "#31363b",
+            "savefig.edgecolor": "#31363b"})
+    elif colortheme == 2:
+        plt.style.use('dark_background')  # Default Matplotlib theme.
 
 
 class welcome_GUI(QWidget, Ui_welcome):
@@ -102,6 +104,8 @@ class help_GUI(QWidget, Ui_help):
         self.shortcut2 = QShortcut(QtGui.QKeySequence(Qt.Key_Left), self)
         self.shortcut2.activated.connect(self.previous)
 
+        self.textEdit.setStyleSheet("background: rgba(0,0,255,0%)")
+
         self.load_all_help_files()
 
     def load_all_help_files(self):
@@ -114,6 +118,8 @@ class help_GUI(QWidget, Ui_help):
             try:
                 path = resource_path(os.path.join(folder_name, "help.txt"))
                 textbox = QTextEdit()
+                textbox.setStyleSheet("background: rgba(0,0,255,0%)")
+                textbox.setReadOnly(True)
                 f = open(path, "r", encoding='utf-8')
                 text = f.readlines()
                 for line in text:
@@ -236,6 +242,9 @@ class mainwindow(QMainWindow, Ui_main):
         QMainWindow.__init__(self)
         Ui_main.__init__(self)
         self.setupUi(self)
+        if colortheme == 2:
+            self.setStyleSheet("background: rgba(0,0,0,100%) ")
+
         if _platform == "darwin":
             self.setWindowIcon(QIcon(resource_path('icon.icns')))
         else:
@@ -332,7 +341,7 @@ class mainwindow(QMainWindow, Ui_main):
                 if keyboard_shortcut_index <= 9:
                     openAct.setShortcuts(QKeySequence("Ctrl+" + str(keyboard_shortcut_index)))
                 else:
-                    openAct.setShortcuts(QKeySequence("Shift+Ctrl+" + str(keyboard_shortcut_index-9)))
+                    openAct.setShortcuts(QKeySequence("Alt+Ctrl+" + str(keyboard_shortcut_index-9)))
                 # openAct.setStatusTip( "Tool tip message" )
                 openAct.triggered.connect(lambda ignore, module_version=module.__version__, module_window=module_window,
                                                  module_title=module_title: self.addModule(module_version,
@@ -351,7 +360,7 @@ class mainwindow(QMainWindow, Ui_main):
 
             keyboard_shortcut_index += 1
 
-        __version__ = "3.08" + "/" + "{:.2f}".format(__thisversion__)
+        __version__ = "3.09" + "/" + "{:.2f}".format(__thisversion__)
 
     def addhelp(self):
         self.numberofgui += 1
@@ -459,6 +468,8 @@ class mainwindow(QMainWindow, Ui_main):
         self.listbox.scrollToItem(item)
         self.listbox.show()
 
+        return item
+
 
 def main():
     app = QApplication(sys.argv)
@@ -496,7 +507,7 @@ def main():
         window.showFullScreen()
     else:
         window.showMaximized()
-    if colortheme + darkthemeavailable == 2:
+    if colortheme + darkthemeavailable == 2 or colortheme + darkthemeavailable == 3:
         app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
     window.show()

@@ -1,4 +1,4 @@
-# Toolbox v3.08
+# Toolbox v3.09
 The third generation of the Toolbox.
 
 Please notice! v3.06 is not backward-compatible with previous versions due to code structure changes. 
@@ -76,4 +76,14 @@ v. 3.08:
 Added addlog() and addlog_with_button() into the main toolbox.py file as standard functions.
  
 See example in the document file. 
+
+v. 3.09: 
+
+Some minor improvements. 
+
+Fixed an issue where arrow keys cannot be used to navigate the documents. 
+
+Added three new modules: MBE Assistant, Microscope Assistant and ImageM. Now modules other than FTIR fitting tool is moved to github submudules. 
+
+Added pure dark theme. It can be activated by setting colortheme parameter to 2. It may cause some visual problems in modules with Matplotlib build-in toolbar.
              
