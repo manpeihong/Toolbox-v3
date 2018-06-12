@@ -287,6 +287,9 @@ class mainwindow(QMainWindow, Ui_main):
 
         self.authorLabel.mousePressEvent = self.addguess
 
+        self.shortcut0 = QShortcut(QtGui.QKeySequence(Qt.Key_Escape), self)
+        self.shortcut0.activated.connect(self.quitfullscreen)
+
         # System Tray
         if _platform == "darwin":
             self.trayIcon = QSystemTrayIcon(QIcon(resource_path('icon.icns')), self)
@@ -414,6 +417,10 @@ class mainwindow(QMainWindow, Ui_main):
         self.addlog('Welcome to {}.'.format(name), "blue")
         self.addlog("This is the log file.", "blue")
         self.addlog('-' * 160, "blue")
+
+    def quitfullscreen(self):
+        if self.isFullScreen():
+            self.showNormal()
 
     def addlog_with_button(self, string, buttontext, fg="default", bg="default"):
 

@@ -83,6 +83,8 @@ Some minor improvements.
 
 Fixed an issue where arrow keys cannot be used to navigate the documents. 
 
+Now one can quit fullscreen mode with Esc key. 
+
 Added three new modules: MBE Assistant, Microscope Assistant and ImageM. Now modules other than FTIR fitting tool is moved to github submudules. 
 
 Added pure dark theme. It can be activated by setting colortheme parameter to 2. It may cause some visual problems in modules with Matplotlib build-in toolbar.
