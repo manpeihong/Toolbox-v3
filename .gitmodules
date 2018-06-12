@@ -1,3 +1,6 @@
 [submodule "FTIR_Commander"]
 	path = FTIR_Commander
 	url = https://github.com/Ryan3141/FTIR_Commander.git
+[submodule "Microscope_Assistant"]
+	path = Microscope_Assistant
+	url = https://github.com/Ryan3141/Microscope_Assistant.git
