@@ -1,11 +1,11 @@
-# Toolbox v3.09
+# Toolbox v3.1
 The third generation of the Toolbox.
 
 Please notice! v3.06 is not backward-compatible with previous versions due to code structure changes. 
 
 To get a detailed documentation of this software, please open the software and go to Menubar->Module->Document.
 
-FTIR fitting tool v3 and FTIR Commander are included to serve as demo. 
+FTIR fitting tool v3 is included to serve as demo. 
 
 System requirement:
 
@@ -89,3 +89,14 @@ Added three new modules: MBE Assistant, Microscope Assistant and ImageM. Now mod
 
 Added pure dark theme. It can be activated by setting colortheme parameter to 2. It may cause some visual problems in modules with Matplotlib build-in toolbar.
              
+v. 3.1: 
+
+Minor bug fixes and under-the-hood improvements. Improved program loading speed. 
+
+New splash screen with loading progress. 
+
+Now module loading error messages are shown in the log frame once the mainwindow is opened. 
+
+Improved System Tray Icon functionality in Windows. Double click the icon to show/hide the main window. Right click to exit the program.
+
+Now all images are stored in "Images" folder. 
