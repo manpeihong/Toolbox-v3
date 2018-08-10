@@ -5,16 +5,17 @@ import math
 import traceback
 import configparser
 import matplotlib
-matplotlib.use("TkAgg")     # This needs to happen before import any other things from matplotlib.
+
+matplotlib.use("TkAgg")  # This needs to happen before import any other things from matplotlib.
 from random import randint
 from sys import platform as _platform
 import io
 from PyQt5 import *
-from PyQt5 import uic, QtGui
+from PyQt5 import uic, QtGui, QtCore
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
-from Modules import modules     # Names of all existing modules are stored in a separate file called "Modules.py".
+from Modules import modules  # Names of all existing modules are stored in a separate file called "Modules.py".
 
 import importlib
 
@@ -27,11 +28,11 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.09" + "/" + "{:.2f}".format(__thisversion__)
+__version__ = "3.1"
 __emailaddress__ = "pman3@uic.edu"
 
 
-def resource_path(relative_path):   # Define function to import external files when using PyInstaller.
+def resource_path(relative_path):  # Define function to import external files when using PyInstaller.
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
@@ -103,6 +104,13 @@ class help_GUI(QWidget, Ui_help):
         self.shortcut1.activated.connect(self.next)
         self.shortcut2 = QShortcut(QtGui.QKeySequence(Qt.Key_Left), self)
         self.shortcut2.activated.connect(self.previous)
+
+        if colortheme + darkthemeavailable < 2:
+            logo = QPixmap(resource_path('Images/toolbox_b.png'))
+        else:
+            logo = QPixmap(resource_path('Images/toolbox_w.png'))
+        logo = logo.scaled(180, 60, transformMode=Qt.SmoothTransformation)
+        self.lb_logo.setPixmap(logo)
 
         self.textEdit.setStyleSheet("background: rgba(0,0,255,0%)")
 
@@ -227,12 +235,50 @@ class guessnumbers_GUI(QDialog, Ui_guess):
 
 
 class SystemTrayIcon(QSystemTrayIcon):
+    """A system tray icon can be used to exit the program or show/minimized the window. """
 
-    def __init__(self, icon, parent=None):
+    def __init__(self, icon, parent, window):
         QSystemTrayIcon.__init__(self, icon, parent)
-        menu = QMenu(parent)
-        exitAction = menu.addAction("Exit")
-        self.setContextMenu(menu)
+        self.parent = parent
+        self.window = window
+        self.menu = QMenu()
+        self.exitAction = self.menu.addAction("Exit")
+        self.exitAction.triggered.connect(self.quitmainwindow)
+        self.setContextMenu(self.menu)
+        if _platform != "darwin":
+            self.activated.connect(self.__icon_activated)
+
+        self.window_showing = 1
+        self.window_status = 1
+        self.show()
+
+    def quitmainwindow(self):
+        self.hide()
+        self.deleteLater()
+        sys.exit()
+        # self.parent.close()
+
+    if _platform != "darwin":
+        def __icon_activated(self, reason):
+            if reason == QSystemTrayIcon.DoubleClick:
+                if self.window_showing == 0:
+                    if self.window_status == 1:
+                        self.window.showFullScreen()
+                    elif self.window_status == 2:
+                        self.window.showMaximized()
+                    else:
+                        self.window.showNormal()
+                    self.window_showing = 1
+                elif self.window_showing == 1:
+                    if self.window.isFullScreen():
+                        self.window_status = 1
+                    elif self.window.isMaximized():
+                        self.window_status = 2
+                    else:
+                        self.window_status = 3
+                    self.window.showMinimized()
+                    self.window_showing = 0
+                self.window.show()
 
 
 class mainwindow(QMainWindow, Ui_main):
@@ -244,11 +290,7 @@ class mainwindow(QMainWindow, Ui_main):
         self.setupUi(self)
         if colortheme == 2:
             self.setStyleSheet("background: rgba(0,0,0,100%) ")
-
-        if _platform == "darwin":
-            self.setWindowIcon(QIcon(resource_path('icon.icns')))
-        else:
-            self.setWindowIcon(QIcon(resource_path('icon.ico')))
+        self.setWindowIcon(Icon)
         self.splitter.setSizes([800, 100])
         self.setStatusBar(self.statusbar)
         self.subwindowlist = []
@@ -261,7 +303,6 @@ class mainwindow(QMainWindow, Ui_main):
             sub.setAttribute(Qt.WA_DeleteOnClose)  # Important for closing tabs properly.
             sub.setWindowIcon(QIcon())  # Remove the icon for each sub window.
             self.subwindowlist.append(sub)
-
         self.gui0 = welcome_GUI()
         self.subwindowlist[0].setWidget(self.gui0)
         self.subwindowlist[0].setWindowTitle("Welcome.")
@@ -273,10 +314,8 @@ class mainwindow(QMainWindow, Ui_main):
         self.numberofgui = 0
 
         self.initialmenuitems("help", 1)
-        self.Load_Available_Modules()
 
-        if _platform == "darwin":
-            self.status1.setText("﻿Welcome to the Toolbox. Press ⌘+M to see document/help.")
+        self.status1.setText("﻿Welcome to the Toolbox. Press {}+M to see document/help.".format(Control_key))
         self.status2.setText('v{}'.format(__version__))
         self.statusbar.addWidget(self.authorLabel)
 
@@ -290,30 +329,6 @@ class mainwindow(QMainWindow, Ui_main):
         self.shortcut0 = QShortcut(QtGui.QKeySequence(Qt.Key_Escape), self)
         self.shortcut0.activated.connect(self.quitfullscreen)
 
-        # System Tray
-        if _platform == "darwin":
-            self.trayIcon = QSystemTrayIcon(QIcon(resource_path('icon.icns')), self)
-        else:
-            self.trayIcon = QSystemTrayIcon(QIcon(resource_path('icon.ico')), self)
-        self.menu = QMenu()
-        self.exitAction = self.menu.addAction("Exit")
-
-        def quitmainwindow():
-            self.close()
-
-        self.exitAction.triggered.connect(quitmainwindow)
-        self.trayIcon.setContextMenu(self.menu)
-
-        if _platform != "darwin":
-            def __icon_activated(reason):
-                if reason == QSystemTrayIcon.DoubleClick:
-                    self.showFullScreen()  # Currently not working.
-                    self.show()
-
-            self.trayIcon.activated.connect(__icon_activated)
-
-        self.trayIcon.show()
-
     def initialmenuitems(self, item, available):
         if available == 1:
             try:
@@ -325,26 +340,30 @@ class mainwindow(QMainWindow, Ui_main):
 
     def Load_Available_Modules(self):
 
-        """Import all available modules into the mainwindow."""
+        """Import all available modules into the mainwindow. This function is called in main()."""
 
         global __thisversion__, __version__  # allows access to global variable in this function
 
         keyboard_shortcut_index = 1
         first_non_module_action = self.menuAdd.actions()[0]  # We will put the new menu actions before this one
+        module_index = -1
         for module_name, window_type, module_title in modules:
-
             try:
+                module_index += 1
+                lb01.setText("Loading {}".format(module_title))
+                progressbar.setValue(module_index / len(modules) * 100)
+                splash.update()
+                app.processEvents()
                 module = importlib.import_module(module_name)  # For example: import MCT_calculator_class_v3
                 __thisversion__ += float(module.__version__)  # Toolbox version is the sum of its components
                 # module_available.append( True )
-
                 module_window = getattr(module, window_type)
 
                 openAct = QAction(module_title, self)
                 if keyboard_shortcut_index <= 9:
                     openAct.setShortcuts(QKeySequence("Ctrl+" + str(keyboard_shortcut_index)))
                 else:
-                    openAct.setShortcuts(QKeySequence("Alt+Ctrl+" + str(keyboard_shortcut_index-9)))
+                    openAct.setShortcuts(QKeySequence("Alt+Ctrl+" + str(keyboard_shortcut_index - 9)))
                 # openAct.setStatusTip( "Tool tip message" )
                 openAct.triggered.connect(lambda ignore, module_version=module.__version__, module_window=module_window,
                                                  module_title=module_title: self.addModule(module_version,
@@ -352,10 +371,11 @@ class mainwindow(QMainWindow, Ui_main):
                                                                                            module_title))
                 self.menuAdd.insertAction(first_non_module_action,
                                           openAct)  # insert openAct before first_non_module_action
-
             except Exception as e:
                 # module_available.append( False )
                 print(e)
+                self.addlog("Loading module {} failed:  {}".format(module_title, str(e)))
+                self.addlog('-' * 160)
                 blank_action = QAction(module_title, self)
                 blank_action.setDisabled(True)
                 self.menuAdd.insertAction(first_non_module_action,
@@ -363,7 +383,7 @@ class mainwindow(QMainWindow, Ui_main):
 
             keyboard_shortcut_index += 1
 
-        __version__ = "3.09" + "/" + "{:.2f}".format(__thisversion__)
+        __version__ += "/" + "{:.2f}".format(__thisversion__)
 
     def addhelp(self):
         self.numberofgui += 1
@@ -401,16 +421,10 @@ class mainwindow(QMainWindow, Ui_main):
         self.addinitiallog(name)
 
     def Normalstatus(self):
-        if _platform == "darwin":
-            self.status1.setText("﻿Welcome to the Toolbox. Press ⌘+M to see document/help.")
-        else:
-            self.status1.setText("﻿Welcome to the Toolbox. Press Ctrl+M to see document/help.")
+        self.status1.setText("﻿Welcome to the Toolbox. Press {}+M to see document/help.".format(Control_key))
 
     def FTIRstatus(self):
-        if _platform == "darwin":
-            self.status1.setText("Welcome to FTIR Fitting Tool. Press ⌘+P for help.")
-        else:
-            self.status1.setText("Welcome to FTIR Fitting Tool. Press Ctrl+P for help.")
+        self.status1.setText("Welcome to FTIR Fitting Tool. Press {}+P for help.".format(Control_key))
 
     def addinitiallog(self, name):
         self.addlog('-' * 160, "blue")
@@ -430,7 +444,7 @@ class mainwindow(QMainWindow, Ui_main):
         item = QListWidgetItem()
         # Create widget
         widget = QWidget()
-        widgetText = QLabel("<font size=3>"+string+"</font>")
+        widgetText = QLabel("<font size=3>" + string + "</font>")
         if fg is not "default":
             widgetText.setForeground(QColor(fg))
         if bg is not "default":
@@ -479,37 +493,65 @@ class mainwindow(QMainWindow, Ui_main):
 
 
 def main():
+    global Icon, Control_key, app, splash, lb01, progressbar
     app = QApplication(sys.argv)
-    splash_pix = QPixmap(resource_path('bg.png'))
-    logo = QPixmap(resource_path('MPL_UIC.png'))
-    logo = logo.scaled(150, 46, transformMode=Qt.SmoothTransformation)
+
+    if _platform == "darwin":
+        Icon = QIcon(resource_path('Images/icon.icns'))
+        Control_key = "⌘"
+    else:
+        Icon = QIcon(resource_path('Images/icon.ico'))
+        Control_key = "Ctrl"
+
+    splash_pix = QPixmap(resource_path('Images/bg.png'))
+    MPL_logo = QPixmap(resource_path('Images/MPL_UIC.png'))
+    MPL_logo = MPL_logo.scaled(150, 46, transformMode=Qt.SmoothTransformation)
+    if colortheme == 0:
+        logo = QPixmap(resource_path('Images/toolbox_b.png'))
+    else:
+        logo = QPixmap(resource_path('Images/toolbox_w.png'))
+    logo = logo.scaled(180, 60, transformMode=Qt.SmoothTransformation)
+
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
     splash.setMask(splash_pix.mask())
 
     vbox = QVBoxLayout()
-    vbox.setContentsMargins(15, 190, 15, 50)
-    font = QFont("Helvetica", 20)
-    lb00 = QLabel("Toolbox v{}".format(__version__[0:4]))
+    vbox.setContentsMargins(15, 130, 15, 0)
+    font = QFont("Helvetica", 15)
+    lb00 = QLabel()
     lb00.setAlignment(Qt.AlignCenter)
-    lb00.setFont(font)
-    lb01 = QLabel("The only one you need.")
+    lb00.setPixmap(logo)
+    lb000 = QLabel("v{}".format(__version__[0:3]))
+    lb000.setAlignment(Qt.AlignCenter)
+    lb000.setFont(font)
+    lb000.setStyleSheet('color: white')
+    lb01 = QLabel("")
     lb01.setAlignment(Qt.AlignCenter)
+    lb01.setStyleSheet('color: white')
     lb02 = QLabel()
     lb02.setAlignment(Qt.AlignCenter)
-    lb02.setPixmap(logo)
+    lb02.setPixmap(MPL_logo)
+    progressbar = QProgressBar()
+    progressbar.setTextVisible(False)   # To remove weird text shown next to progressbar in Windows.
     vbox.addWidget(lb00)
-    vbox.addWidget(lb01)
+    vbox.addWidget(lb000)
+    vbox.addStretch()
     vbox.addWidget(lb02)
+    vbox.addStretch()
+    vbox.addWidget(lb01)
+    vbox.addWidget(progressbar)
     splash.setLayout(vbox)
 
     splash.show()
     app.processEvents()
 
-    # Simulate something that takes time
-    time.sleep(2)
-
     window = mainwindow()
+    window.Load_Available_Modules()     # This step takes long time. Until it is finished, the splash screen will be on.
+
     window.setWindowTitle("Toolbox v{}".format(__version__))
+    window.status2.setText('v{}'.format(__version__))
+    trayIcon = SystemTrayIcon(Icon, app, window)    # System Tray
+
     if fullscreenonstart == 1:
         window.showFullScreen()
     else:
@@ -517,11 +559,10 @@ def main():
     if colortheme + darkthemeavailable == 2 or colortheme + darkthemeavailable == 3:
         app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
-    window.show()
     splash.finish(window)
+    window.show()
 
     # Override excepthook to prevent program crashing and create feekback log.
-
     def excepthook(excType, excValue, tracebackobj):
         """
         Global function to catch unhandled exceptions in main thread ONLY.
