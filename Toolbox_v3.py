@@ -348,6 +348,7 @@ class mainwindow(QMainWindow, Ui_main):
 
         for i in range(0, 30):  # Set 30 subwindows max.
             sub = QMdiSubWindow()
+            sub.setAutoFillBackground(True)
             sub.setAttribute(Qt.WA_DeleteOnClose)  # Important for closing tabs properly.
             sub.setWindowIcon(QIcon())  # Remove the icon for each sub window.
             self.subwindowlist.append(sub)
@@ -472,6 +473,7 @@ class mainwindow(QMainWindow, Ui_main):
     def addModule(self, module_version, window_type, module_title):
         self.numberofgui += 1
         gui = window_type(self.subwindowlist[self.numberofgui], self)
+        gui.setAutoFillBackground(True)     # Try to solve the transparent background issue for dark theme.
         self.setupsubwindow(gui, module_title, module_version)
 
     def setupsubwindow(self, gui, name, version):
@@ -488,6 +490,14 @@ class mainwindow(QMainWindow, Ui_main):
         self.subwindowlist[self.numberofgui].show()
 
         self.addinitiallog(name)
+        try:
+            self.addlog("Loading rest components...")
+            app.processEvents()
+            gui.init_after_launch()
+            self.addlog("Complete.")
+            app.processEvents()
+        except AttributeError:
+            pass
 
     def Normalstatus(self):
         self.status1.setText("﻿Welcome to the Toolbox. Press {}+M to see document/help.".format(Control_key))
