@@ -491,10 +491,8 @@ class mainwindow(QMainWindow, Ui_main):
 
         self.addinitiallog(name)
         try:
-            self.addlog("Loading rest components...")
             app.processEvents()
             gui.init_after_launch()
-            self.addlog("Complete.")
             app.processEvents()
         except AttributeError:
             pass

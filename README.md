@@ -91,7 +91,7 @@ Added pure dark theme. It can be activated by setting colortheme parameter to 2.
              
 v. 3.1: 
 
-Minor bug fixes and under-the-hood improvements. Improved program loading speed. 
+Minor bug fixes and under-the-hood improvements. Improved program loading speed. Added potential function to help tools load faster. 
 
 New splash screen with loading progress. 
 
