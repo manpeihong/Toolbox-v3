@@ -49,13 +49,15 @@ qtwelcomefile = resource_path("welcome.ui")
 Ui_welcome, QtBaseClass = uic.loadUiType(qtwelcomefile)
 qthelpfile = resource_path("help.ui")
 Ui_help, QtBaseClass = uic.loadUiType(qthelpfile)
+qtsettingsfile = resource_path("settings.ui")
+Ui_settings, QtBaseClass = uic.loadUiType(qtsettingsfile)
 qtguessfile = resource_path("guessnumbers.ui")
 Ui_guess, QtBaseClass = uic.loadUiType(qtguessfile)
 
 config = configparser.ConfigParser()
 config.read(resource_path('configuration.ini'))
 colortheme = int(config["Settings"]["colortheme"])
-fullscreenonstart = int(config["Mainwindow"]["fullscreenonstart"])
+window_start_view = int(config["Settings"]["window_start_view"])
 
 if darkthemeavailable == 1:
     if colortheme == 1:
@@ -148,6 +150,52 @@ class help_GUI(QWidget, Ui_help):
         if self.currentindex > 0:
             self.currentindex -= 1
             self.stackedWidget.setCurrentIndex(self.currentindex)
+
+
+class settings_GUI(QDialog, Ui_settings):
+    """Choose the widgets to be included."""
+
+    def __init__(self, root):
+        QDialog.__init__(self, root)
+        Ui_settings.__init__(self)
+        self.setupUi(self)
+        if _platform == "darwin":
+            self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
+
+        x = app.desktop().screenGeometry().center().x()
+        y = app.desktop().screenGeometry().center().y()
+        self.move(x - self.geometry().width() // 2, y - self.geometry().height() // 2 - 100)
+
+        self.status = []
+        self.statuschanged = 0
+
+        self.status.append(int(config["Settings"]["colortheme"]))
+        self.status.append(int(config["Settings"]["window_start_view"]))
+
+        self.themes = ["Classic", "Dark", "Pure Black"]
+        self.choice_theme.addItems(self.themes)
+        self.choice_theme.setCurrentIndex(int(config["Settings"]["colortheme"]))
+        self.views = ["Full Screen", "Maximized", "Normal"]
+        self.choice_views.addItems(self.views)
+        self.choice_views.setCurrentIndex(int(config["Settings"]["window_start_view"]) - 1)
+
+        self.resultbox.accepted.connect(self.buttonOkayfuncton)
+        self.resultbox.rejected.connect(self.buttonCancelfuncton)
+        self.shortcut = QShortcut(QtGui.QKeySequence(Qt.Key_Enter), self)
+        self.shortcut.activated.connect(self.buttonOkayfuncton)
+
+    def buttonOkayfuncton(self):
+        cfgfile = open(resource_path('configuration.ini'), 'w')
+
+        if self.choice_theme.currentIndex() != self.status[0] or self.choice_views.currentIndex() != self.status[1]:
+            self.statuschanged = 1
+        config.set("Settings", "colortheme", str(self.choice_theme.currentIndex()))
+        config.set("Settings", "window_start_view", str(self.choice_views.currentIndex() + 1))
+        config.write(cfgfile)
+        cfgfile.close()
+
+    def buttonCancelfuncton(self):
+        pass
 
 
 class guessnumbers_GUI(QDialog, Ui_guess):
@@ -314,6 +362,7 @@ class mainwindow(QMainWindow, Ui_main):
         self.numberofgui = 0
 
         self.initialmenuitems("help", 1)
+        self.initialmenuitems("Settings", 1)
 
         self.status1.setText("﻿Welcome to the Toolbox. Press {}+M to see document/help.".format(Control_key))
         self.status2.setText('v{}'.format(__version__))
@@ -328,6 +377,15 @@ class mainwindow(QMainWindow, Ui_main):
 
         self.shortcut0 = QShortcut(QtGui.QKeySequence(Qt.Key_Escape), self)
         self.shortcut0.activated.connect(self.quitfullscreen)
+
+        self.trayIcon = None
+
+    def closeEvent(self, event):
+        """Make sure the system tray icon is destroyed correctly in Windows. """
+
+        self.trayIcon.hide()
+        self.trayIcon.deleteLater()
+        event.accept()
 
     def initialmenuitems(self, item, available):
         if available == 1:
@@ -394,6 +452,17 @@ class mainwindow(QMainWindow, Ui_main):
         self.mdi.addSubWindow(self.subwindowlist[self.numberofgui])
         self.subwindowlist[self.numberofgui].showMaximized()
         self.subwindowlist[self.numberofgui].show()
+
+    def addSettings(self):
+
+        """Customized Settings. """
+
+        window_settings = settings_GUI(self)
+        window_settings.show()
+
+        yesorno = window_settings.exec_()  # Crucial to capture the result. 1 for Yes and 0 for No.
+        if yesorno:
+            pass
 
     def addguess(self, event):
         window = guessnumbers_GUI(self)
@@ -506,10 +575,7 @@ def main():
     splash_pix = QPixmap(resource_path('Images/bg.png'))
     MPL_logo = QPixmap(resource_path('Images/MPL_UIC.png'))
     MPL_logo = MPL_logo.scaled(150, 46, transformMode=Qt.SmoothTransformation)
-    if colortheme == 0:
-        logo = QPixmap(resource_path('Images/toolbox_b.png'))
-    else:
-        logo = QPixmap(resource_path('Images/toolbox_w.png'))
+    logo = QPixmap(resource_path('Images/toolbox_w.png'))
     logo = logo.scaled(180, 60, transformMode=Qt.SmoothTransformation)
 
     splash = QSplashScreen(splash_pix, Qt.WindowStaysOnTopHint)
@@ -551,11 +617,14 @@ def main():
     window.setWindowTitle("Toolbox v{}".format(__version__))
     window.status2.setText('v{}'.format(__version__))
     trayIcon = SystemTrayIcon(Icon, app, window)    # System Tray
+    window.trayIcon = trayIcon
 
-    if fullscreenonstart == 1:
+    if window_start_view == 1:
         window.showFullScreen()
-    else:
+    elif window_start_view == 2:
         window.showMaximized()
+    else:
+        window.showNormal()
     if colortheme + darkthemeavailable == 2 or colortheme + darkthemeavailable == 3:
         app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 

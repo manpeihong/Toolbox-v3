@@ -95,6 +95,8 @@ Minor bug fixes and under-the-hood improvements. Improved program loading speed.
 
 New splash screen with loading progress. 
 
+New global settings window. 
+
 Now module loading error messages are shown in the log frame once the mainwindow is opened. 
 
 Improved System Tray Icon functionality in Windows. Double click the icon to show/hide the main window. Right click to exit the program.
