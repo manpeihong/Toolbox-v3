@@ -1,8 +1,6 @@
 # Toolbox v3.1
 The third generation of the Toolbox.
 
-Please notice! v3.06 is not backward-compatible with previous versions due to code structure changes. 
-
 To get a detailed documentation of this software, please open the software and go to Menubar->Module->Document.
 
 FTIR fitting tool v3 is included to serve as demo. 
@@ -15,11 +13,13 @@ python 3.4 +
 
 The following packages need to be installed before running the program:
 
-matplotlib, numpy, PyQt5 and mysqlclient. Install using pip is recommended.
+matplotlib, numpy, PyQt5 and mysqlclient. 
+
+Install using pip is recommended.
 
 Now dark theme is available. Pip install qdarkstyle in order to use it. 
 
-How to run it:
+How to run Toolbox:
 
 Download the whole package to local, and then run "Toolbox_v3.py".
 
