@@ -1,11 +1,14 @@
 # Toolbox v3.1
 The third generation of the Toolbox.
 
+![](https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b.png)
+![](https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC.png)
 To get a detailed documentation of this software, please open the software and go to Menubar->Module->Document.
 
 FTIR fitting tool v3 is included to serve as demo. 
 
-System requirement:
+
+###System requirement:
 
 Mac OS/ Windows / Linux (Not tested)
 
@@ -13,19 +16,23 @@ python 3.4 +
 
 The following packages need to be installed before running the program:
 
-matplotlib, numpy, PyQt5 and mysqlclient. 
+- matplotlib
+- numpy
+- PyQt5
+- PyqtChart
+- mysqlclient
 
 Install using pip is recommended.
 
 Now dark theme is available. Pip install qdarkstyle in order to use it. 
 
-How to run Toolbox:
+###How to run Toolbox:
 
 Download the whole package to local, and then run "Toolbox_v3.py".
 
 For any questions, please contact pman3@uic.edu.
 
-Update log:
+###Update log:
 
 v. 3.0: Initial version number. Qt(PyQt5) is used to design the UI. 
 
