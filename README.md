@@ -1,6 +1,6 @@
 ![](https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b.png)
 
-![](https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC.png)
+![](https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC_b.png)
 
 # Toolbox v3.1
 The third generation of the Toolbox.
