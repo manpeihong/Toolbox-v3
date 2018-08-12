@@ -1,6 +1,7 @@
-# <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b.png" width="200"><img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC_b.png" width="200">
+# <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b.png" width="200">
+<img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC_b.png" width="200">
 
-# Toolbox v3.1
+# Version v3.1
 The third generation of the Toolbox.
 
 To get a detailed documentation of this software, please open the software and go to Menubar->Module->Document.
