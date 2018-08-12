@@ -208,8 +208,7 @@ class intro_GUI(QDialog, Ui_intro):
         QDialog.__init__(self, root)
         Ui_intro.__init__(self)
         self.setupUi(self)
-        if _platform == "darwin":
-            self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
 
         x = app.desktop().screenGeometry().center().x()
         y = app.desktop().screenGeometry().center().y()
