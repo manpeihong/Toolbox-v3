@@ -95,10 +95,12 @@ Minor bug fixes and under-the-hood improvements. Improved program loading speed.
 
 New splash screen with loading progress. 
 
-New global settings window. 
+New introduction screen with global settings.
+
+New global settings window accessable from menu bar. 
 
 Now module loading error messages are shown in the log frame once the mainwindow is opened. 
 
 Improved System Tray Icon functionality in Windows. Double click the icon to show/hide the main window. Right click to exit the program.
 
-Now all images are stored in "Images" folder. 
+Now all images are stored in "Images" folder. ALl .ui files are stored in "UI" folder. 

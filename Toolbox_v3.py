@@ -43,19 +43,22 @@ def resource_path(relative_path):  # Define function to import external files wh
     return os.path.join(base_path, relative_path)
 
 
-qtmainfile = resource_path("mainwindow.ui")  # GUI layout file.
+qtmainfile = resource_path("UI/mainwindow.ui")  # GUI layout file.
 Ui_main, QtBaseClass = uic.loadUiType(qtmainfile)
-qtwelcomefile = resource_path("welcome.ui")
+qtwelcomefile = resource_path("UI/welcome.ui")
 Ui_welcome, QtBaseClass = uic.loadUiType(qtwelcomefile)
-qthelpfile = resource_path("help.ui")
+qthelpfile = resource_path("UI/help.ui")
 Ui_help, QtBaseClass = uic.loadUiType(qthelpfile)
-qtsettingsfile = resource_path("settings.ui")
+qtsettingsfile = resource_path("UI/settings.ui")
 Ui_settings, QtBaseClass = uic.loadUiType(qtsettingsfile)
-qtguessfile = resource_path("guessnumbers.ui")
+qtintrofile = resource_path("UI/intro.ui")
+Ui_intro, QtBaseClass = uic.loadUiType(qtintrofile)
+qtguessfile = resource_path("UI/guessnumbers.ui")
 Ui_guess, QtBaseClass = uic.loadUiType(qtguessfile)
 
 config = configparser.ConfigParser()
 config.read(resource_path('configuration.ini'))
+show_intro = int(config["Settings"]["show_intro"])
 colortheme = int(config["Settings"]["colortheme"])
 window_start_view = int(config["Settings"]["window_start_view"])
 
@@ -196,6 +199,70 @@ class settings_GUI(QDialog, Ui_settings):
 
     def buttonCancelfuncton(self):
         pass
+
+
+class intro_GUI(QDialog, Ui_intro):
+    """Choose the widgets to be included."""
+
+    def __init__(self, root):
+        QDialog.__init__(self, root)
+        Ui_intro.__init__(self)
+        self.setupUi(self)
+        if _platform == "darwin":
+            self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
+
+        x = app.desktop().screenGeometry().center().x()
+        y = app.desktop().screenGeometry().center().y()
+        self.move(x - self.geometry().width() // 2, y - self.geometry().height() // 2)
+
+        logo = QPixmap(resource_path('Images/toolbox_w.png'))
+        logo = logo.scaled(180, 60, transformMode=Qt.SmoothTransformation)
+        MPL_logo = QPixmap(resource_path('Images/MPL_UIC.png'))
+        MPL_logo = MPL_logo.scaled(150, 46, transformMode=Qt.SmoothTransformation)
+        self.lb_logo.setPixmap(logo)
+        self.lb_logo.setStyleSheet("color: white; background: rgba(0,0,255,0%)")
+        self.lb3.setPixmap(MPL_logo)
+        self.textEdit.setStyleSheet("color: white; background: rgba(0,0,255,0%)")
+        self.frame.setStyleSheet("color: white; background: rgba(0,0,255,0%)")
+        self.frame2.setStyleSheet("color: white; background: rgba(0,0,255,0%)")
+        self.lb_1.setStyleSheet("color: white; background: rgba(0,0,255,0%)")
+        self.checkBox.setStyleSheet("color: white; background: rgba(0,0,255,0%)")
+
+        self.status = []
+        self.statuschanged = 0
+
+        self.status.append(int(config["Settings"]["colortheme"]))
+        self.status.append(int(config["Settings"]["window_start_view"]))
+
+        self.themes = ["Classic", "Dark", "Pure Black"]
+        self.choice_theme.addItems(self.themes)
+        self.choice_theme.setCurrentIndex(int(config["Settings"]["colortheme"]))
+        self.views = ["Full Screen", "Maximized", "Normal"]
+        self.choice_views.addItems(self.views)
+        self.choice_views.setCurrentIndex(int(config["Settings"]["window_start_view"]) - 1)
+        self.choice_theme.setStyleSheet('selection-background-color: rgb(168,168,168)')
+        self.choice_views.setStyleSheet('selection-background-color: rgb(168,168,168)')
+
+        self.resultbox.accepted.connect(self.buttonOkayfuncton)
+        self.shortcut = QShortcut(QtGui.QKeySequence(Qt.Key_Enter), self)
+        self.shortcut.activated.connect(self.buttonOkayfuncton)
+
+    def buttonOkayfuncton(self):
+        cfgfile = open(resource_path('configuration.ini'), 'w')
+
+        if self.choice_theme.currentIndex() != self.status[0] or self.choice_views.currentIndex() != self.status[1]:
+            self.statuschanged = 1
+        config.set("Settings", "colortheme", str(self.choice_theme.currentIndex()))
+        config.set("Settings", "window_start_view", str(self.choice_views.currentIndex() + 1))
+        if self.checkBox.isChecked():
+            config.set("Settings", "show_intro", "0")
+        config.write(cfgfile)
+        cfgfile.close()
+
+    def paintEvent(self, event):
+        painter = QPainter(self)
+        painter.drawPixmap(self.rect(), QPixmap(resource_path('Images/bg.png')))
+        QDialog.paintEvent(self, event)
 
 
 class guessnumbers_GUI(QDialog, Ui_guess):
@@ -380,6 +447,7 @@ class mainwindow(QMainWindow, Ui_main):
         self.shortcut0.activated.connect(self.quitfullscreen)
 
         self.trayIcon = None
+        self.first_tool_opened = 0
 
     def closeEvent(self, event):
         """Make sure the system tray icon is destroyed correctly in Windows. """
@@ -442,7 +510,20 @@ class mainwindow(QMainWindow, Ui_main):
 
             keyboard_shortcut_index += 1
 
+        lb01.hide()
+        progressbar.hide()
         __version__ += "/" + "{:.2f}".format(__thisversion__)
+
+    def intro_window(self):
+
+        """Show a intro window at the first time launching the program. """
+
+        window_intro = intro_GUI(self)
+        window_intro.show()
+
+        yesorno = window_intro.exec_()  # Crucial to capture the result. 1 for Yes and 0 for No.
+        if yesorno:
+            pass
 
     def addhelp(self):
         self.numberofgui += 1
@@ -471,6 +552,9 @@ class mainwindow(QMainWindow, Ui_main):
         window.exec_()
 
     def addModule(self, module_version, window_type, module_title):
+        if self.first_tool_opened == 0:
+            self.subwindowlist[0].close()
+            self.first_tool_opened = 1
         self.numberofgui += 1
         gui = window_type(self.subwindowlist[self.numberofgui], self)
         gui.setAutoFillBackground(True)     # Try to solve the transparent background issue for dark theme.
@@ -581,6 +665,7 @@ def main():
         Control_key = "Ctrl"
 
     splash_pix = QPixmap(resource_path('Images/bg.png'))
+    splash_pix = splash_pix.scaled(480, 300, transformMode=Qt.SmoothTransformation)
     MPL_logo = QPixmap(resource_path('Images/MPL_UIC.png'))
     MPL_logo = MPL_logo.scaled(150, 46, transformMode=Qt.SmoothTransformation)
     logo = QPixmap(resource_path('Images/toolbox_w.png'))
@@ -590,21 +675,23 @@ def main():
     splash.setMask(splash_pix.mask())
 
     vbox = QVBoxLayout()
-    vbox.setContentsMargins(15, 130, 15, 0)
+    vbox.setContentsMargins(15, 110, 15, 0)
     font = QFont("Helvetica", 15)
     lb00 = QLabel()
     lb00.setAlignment(Qt.AlignCenter)
     lb00.setPixmap(logo)
+    lb00.setStyleSheet("background: rgba(0,0,255,0%)")
     lb000 = QLabel("v{}".format(__version__[0:3]))
     lb000.setAlignment(Qt.AlignCenter)
     lb000.setFont(font)
-    lb000.setStyleSheet('color: white')
+    lb000.setStyleSheet('color: white; background: rgba(0,0,255,0%)')
     lb01 = QLabel("")
     lb01.setAlignment(Qt.AlignCenter)
-    lb01.setStyleSheet('color: white')
+    lb01.setStyleSheet('color: white; background: rgba(0,0,255,0%)')
     lb02 = QLabel()
     lb02.setAlignment(Qt.AlignCenter)
     lb02.setPixmap(MPL_logo)
+    lb02.setStyleSheet("background: rgba(0,0,255,0%)")
     progressbar = QProgressBar()
     progressbar.setTextVisible(False)   # To remove weird text shown next to progressbar in Windows.
     vbox.addWidget(lb00)
@@ -636,8 +723,8 @@ def main():
     if colortheme + darkthemeavailable == 2 or colortheme + darkthemeavailable == 3:
         app.setStyleSheet(qdarkstyle.load_stylesheet_pyqt5())
 
-    splash.finish(window)
     window.show()
+    splash.finish(window)
 
     # Override excepthook to prevent program crashing and create feekback log.
     def excepthook(excType, excValue, tracebackobj):
@@ -676,6 +763,9 @@ def main():
         errorbox.exec_()
 
     sys.excepthook = excepthook
+
+    if show_intro == 1:
+        window.intro_window()
 
     sys.exit(app.exec_())
 
