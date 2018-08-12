@@ -1,5 +1,4 @@
-<img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b.png" width="200">
-<img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC_b.png" width="100">
+<img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b.png" width="200"><img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC_b.png" width="100">
 
 # Toolbox v3.1
 The third generation of the Toolbox.
