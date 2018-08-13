@@ -1,7 +1,7 @@
-<img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b.png" width="200"> v 3.1
+<img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b_in_text.png" width="200"> v 3.1
 
 # Introduction
-The third generation of the **Toolbox**.
+The third generation of <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b_in_text.png" width="60">.
 
 To get a detailed documentation of this software, please open the software and go to **Menubar->Module->Document**.
 
@@ -28,7 +28,7 @@ For example, on Mac OS, run `python3 -m pip install matplotlib` in terminal. In 
 
 Dark theme is optional. But if you do like dark theme, please pip install **qdarkstyle** in order to use it. 
 
-# How to run Toolbox
+# How to run <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b_in_text.png" width="100">
 
 Download the whole package to local, and then run "**Toolbox_v3.py**".
 
