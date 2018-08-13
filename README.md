@@ -9,7 +9,7 @@ To get a detailed documentation of this software, please open the software and g
 
 For any questions, please contact pman3@uic.edu.
 
-# System requirement:
+# System requirement
 
 Operating System: Mac OS/ Windows / Linux (Not tested);
 
@@ -28,11 +28,11 @@ For example, on Mac OS, run `python3 -m pip install matplotlib` in terminal. In 
 
 Dark theme is optional. But if you do like dark theme, please pip install **qdarkstyle** in order to use it. 
 
-# How to run Toolbox:
+# How to run Toolbox
 
 Download the whole package to local, and then run "**Toolbox_v3.py**".
 
-# Update log:
+# Update log
 
 v. 3.0: Initial version number. Qt(PyQt5) is used to design the UI. 
 
