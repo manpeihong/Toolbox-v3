@@ -1,5 +1,4 @@
 <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b.png" width="200"> v 3.1
-# <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC_b.png" width="200">
 
 # Introduction
 The third generation of the Toolbox.
@@ -85,3 +84,5 @@ v. 3.1:
 - Now module loading error messages are shown in the log frame once the mainwindow is opened. 
 - Improved System Tray Icon functionality in Windows. Double click the icon to show/hide the main window. Right click to exit the program.
 - Now all images are stored in "Images" folder. ALl .ui files are stored in "UI" folder. 
+
+# <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC_b.png" width="200">
