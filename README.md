@@ -1,19 +1,21 @@
 <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b.png" width="200"> v 3.1
 
 # Introduction
-The third generation of the Toolbox.
+The third generation of the **Toolbox**.
 
-To get a detailed documentation of this software, please open the software and go to Menubar->Module->Document.
+To get a detailed documentation of this software, please open the software and go to **Menubar->Module->Document**.
 
-FTIR fitting tool v3 is included to serve as demo. 
+**FTIR fitting tool v3** is included to serve as demo. 
+
+For any questions, please contact pman3@uic.edu.
 
 # System requirement:
 
-Mac OS/ Windows / Linux (Not tested)
+Operating System: Mac OS/ Windows / Linux (Not tested);
 
-python 3.4 +
+python 3.4 +. [Click here to download the newest version of python.](https://www.python.org/downloads/)
 
-The following packages need to be installed before running the program:
+The following libraries need to be pre-installed in order to run the program:
 
 - matplotlib
 - numpy
@@ -21,15 +23,14 @@ The following packages need to be installed before running the program:
 - PyqtChart
 - mysqlclient
 
-Install using pip is recommended.
+Install using pip is recommended. 
+For example, on Mac OS, run `python3 -m pip install matplotlib` in terminal. In Windows, run `python -m pip install matplotlib` in cmd. 
 
-Now dark theme is available. Pip install qdarkstyle in order to use it. 
+Dark theme is optional. But if you do like dark theme, please pip install **qdarkstyle** in order to use it. 
 
 # How to run Toolbox:
 
-Download the whole package to local, and then run "Toolbox_v3.py".
-
-For any questions, please contact pman3@uic.edu.
+Download the whole package to local, and then run "**Toolbox_v3.py**".
 
 # Update log:
 
