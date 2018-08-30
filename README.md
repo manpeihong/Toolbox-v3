@@ -7,6 +7,8 @@ To get a detailed documentation of this software, please open the software and g
 
 **FTIR fitting tool v3** is included to serve as demo. 
 
+Now one can add new tools easily with the build-in Tool Creator. 
+
 For any questions, please contact pman3@uic.edu.
 
 # System requirement
