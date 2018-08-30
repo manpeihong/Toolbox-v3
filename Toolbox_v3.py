@@ -28,7 +28,7 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.1"
+__version__ = "3.2"
 __emailaddress__ = "pman3@uic.edu"
 
 
