@@ -1,0 +1,6 @@
+Tool Creator v1.0.
+
+Author: Peihong Man
+For any questions or suggestions please contact pman3@uic.edu. About this program:This is the tool to help other people create more tools. 
+Update Log:
+v. 1.0:   First build. 
