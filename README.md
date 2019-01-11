@@ -5,7 +5,7 @@ The third generation of <img src="https://github.com/manpeihong/Toolbox-v3/blob/
 
 To get a detailed documentation of this software, please open the software and go to **Menubar->Module->Document**.
 
-**FTIR fitting tool v3** is included to serve as demo. 
+**FTIR fitting tool v3** and **Matplotter** is included to serve as demo. 
 
 Now one can add new tools easily with the build-in Tool Creator. 
 
@@ -87,7 +87,11 @@ v. 3.1:
 - Now module loading error messages are shown in the log frame once the mainwindow is opened. 
 - Improved System Tray Icon functionality in Windows. Double click the icon to show/hide the main window. Right click to exit the program.
 - Now all images are stored in "Images" folder. ALl .ui files are stored in "UI" folder. 
+
 v. 3.2: 
-- Tool Creator is added to help researchers add new tools to the <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b_in_text.png" width="60">.
- 
+- Tool Creator is added to help researchers add new tools to the <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/toolbox_b_in_text.png" width="60">. 
+
+v. 3.3 (2019 Update):
+- Matplotter is added to help researchers create paper quality figures. 
+
 # <img src="https://github.com/manpeihong/Toolbox-v3/blob/master/Images/MPL_UIC_b.png" width="200">

@@ -28,7 +28,7 @@ try:
 except ModuleNotFoundError:
     darkthemeavailable = 0
 
-__version__ = "3.2"
+__version__ = "3.3"
 __emailaddress__ = "pman3@uic.edu"
 
 
@@ -136,7 +136,7 @@ class help_GUI(QWidget, Ui_help):
                 f = open(path, "r", encoding='utf-8')
                 text = f.readlines()
                 for line in text:
-                    textbox.append(line)
+                    textbox.append("<pre>"+line+"</pre>")
                 f.close()
                 textbox.verticalScrollBar().setValue(300)
                 self.stackedWidget.addWidget(textbox)
@@ -312,7 +312,7 @@ class guessnumbers_GUI(QDialog, Ui_guess):
         if self.As == self.digit:
             self.numberoftriesleft -= 1
             self.countdown.display(self.numberoftriesleft)
-            self.addlog('Bingo! The number is {}.'.format(self.numberstring), 'red')
+            self.addlog('Bingo! The number is {}.'.format(self.numberstring), 'green')
             self.buttonstart.setText("Start")
             self.entry_3.setText("")
             self.numberstring = ''
