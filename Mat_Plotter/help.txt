@@ -1,0 +1,28 @@
++----------------------------------------------------------------------------+
+| Mat Plotter v1.0.                                                          |
++----------------------------------------------------------------------------+
+|                                                                            |
+|                                                          XX       XX       |
+|                                                         XXXX     XXXX      |
+|                                                        XX  XX   XX  XX     |
+|                                                       XX    XX XX    XX    |
+|                                                      XX      XXX      XX   |
+| For any questions, please contact pman3@uic.edu.    XX        X        XX  |
+|                                                                            |
++----------------------------------------------------------------------------+
+About this program:
+An interactive GUI to plot scientific figures using Matplotlib.  
+
+Main features: 
+Read .csv data files with two or multiple columns; 
+Load column titles automatically if there are column titles; 
+X-Y graph, twin-X and twin-Y figures are all supported; 
+Fully controlled legend; 
+Auto adjust range and ticks;
+Load/Save format to repeat formatting of different figures; 
+Customized output .png image quality;
+Three different image color themes.
+ 
+Update Log:
+v. 1.0:
+   First build. 
