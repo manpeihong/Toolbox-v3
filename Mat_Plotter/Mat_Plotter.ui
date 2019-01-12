@@ -1069,7 +1069,7 @@
                    </size>
                   </property>
                   <property name="text">
-                   <string>Wavenumber ($cm^{-1}$)</string>
+                   <string>Wavenumber ($\mathdefault{cm}^{-1}$)</string>
                   </property>
                  </widget>
                 </item>
@@ -1696,7 +1696,7 @@
                    </size>
                   </property>
                   <property name="text">
-                   <string>Wavenumber ($cm^{-1}$)</string>
+                   <string>Wavenumber ($\mathdefault{cm}^{-1}$)</string>
                   </property>
                  </widget>
                 </item>

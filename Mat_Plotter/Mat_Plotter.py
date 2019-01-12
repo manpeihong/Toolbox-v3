@@ -388,6 +388,9 @@ class Mat_Plotter_GUI(QWidget, Ui_MatPlotter):
         self.shortcut4 = QtWidgets.QShortcut(QtGui.QKeySequence(QtCore.Qt.Key_Enter), self)
         self.shortcut4.activated.connect(self.plot)
 
+        plt.rcParams['mathtext.rm'] = 'Bitstream Vera Sans'
+        plt.rcParams['mathtext.it'] = 'Bitstream Vera Sans:italic'
+        plt.rcParams['mathtext.bf'] = 'Bitstream Vera Sans:bold'
         self.mplplot = PlotCanvas(self.figure_frame, 7, 7)
         self.figure = self.mplplot.fig
         self.theplot = self.mplplot.plot
@@ -511,8 +514,8 @@ class Mat_Plotter_GUI(QWidget, Ui_MatPlotter):
                 ax.spines['right'].set_color('black')
                 ax.xaxis.label.set_color('black')
                 ax.yaxis.label.set_color('black')
-                ax.tick_params(axis='x', colors='black')
-                ax.tick_params(axis='y', colors='black')
+                ax.tick_params(axis='x', which='both', colors='black')
+                ax.tick_params(axis='y', which='both', colors='black')
                 ax.set_facecolor('white')
             self.figure.set_facecolor('white')
             plt.rcParams.update({
@@ -527,8 +530,8 @@ class Mat_Plotter_GUI(QWidget, Ui_MatPlotter):
                 ax.spines['right'].set_color('white')
                 ax.xaxis.label.set_color('white')
                 ax.yaxis.label.set_color('white')
-                ax.tick_params(axis='x', colors='white')
-                ax.tick_params(axis='y', colors='white')
+                ax.tick_params(axis='x', which='both', colors='white')
+                ax.tick_params(axis='y', which='both', colors='white')
                 ax.set_facecolor('#31363b')
             self.figure.set_facecolor('#31363b')
             plt.rcParams.update({
@@ -866,6 +869,7 @@ class Mat_Plotter_GUI(QWidget, Ui_MatPlotter):
             self.dpi = window_settings.dpi
             self.colortheme = window_settings.index1
             self.update_figure_params(self.colortheme)
+            self.plot()
 
     def undo_auto(self, limit_x=0, tick_x=0, limit_y=0, tick_y=0):
         if limit_x:
@@ -898,6 +902,7 @@ class Mat_Plotter_GUI(QWidget, Ui_MatPlotter):
             for item in (ax.get_xticklabels() + ax.get_yticklabels()):
                 item.set_fontsize(int(self.entry_tickfont.text()))
                 item.set_fontname(self.font_options[self.fontoption.currentIndex()])
+        plt.rcParams['mathtext.rm'] = self.font_options[self.fontoption.currentIndex()]
         self.mplplot.draw()
 
         self.getdata()
