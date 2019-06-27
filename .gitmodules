@@ -4,3 +4,9 @@
 [submodule "Microscope_Assistant"]
 	path = Microscope_Assistant
 	url = https://github.com/Ryan3141/Microscope_Assistant.git
+[submodule "MPL_Shared"]
+	path = MPL_Shared
+	url = https://github.com/Ryan3141/MPL_Shared.git
+[submodule "Processing_Image_Organizer"]
+	path = Processing_Image_Organizer
+	url = https://github.com/Ryan3141/Processing_Image_Organizer.git

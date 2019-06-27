@@ -14,6 +14,7 @@ modules = [
     ("ImageM.ImageM", "ImageM_GUI", "Image M"),
     ("RHEED_Cam.RHEED_Cam", "RHEED_Cam_GUI", "RHEED Cam"),
     ("Mat_Plotter.Mat_Plotter", "Mat_Plotter_GUI", "Mat Plotter"),
+    ("Processing_Image_Organizer.Processing_Image_Organizer", "Processing_Image_Organizer_GUI", "Processing Image Viewer"),
     ("Tool_Creator.Tool_Creator", "Tool_Creator_GUI", "Tool Creator")
 ]
 # Module Name (file_name.py or folder.file_name.py), QWidget for module window, text title of module for titlebar
