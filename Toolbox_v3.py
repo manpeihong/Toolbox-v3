@@ -1,26 +1,31 @@
+""" Toolbox v3 """
+
+import configparser
+import importlib
+import io
+import math
 import os
 import sys
 import time
-import math
 import traceback
-import configparser
-import matplotlib
-
-matplotlib.use("TkAgg")  # This needs to happen before import any other things from matplotlib.
 from random import randint
 from sys import platform as _platform
-import io
+
+import matplotlib
 from PyQt5 import *
-from PyQt5 import uic, QtGui, QtCore
+from PyQt5 import QtCore, QtGui, uic
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
+
 from Modules import modules  # Names of all existing modules are stored in a separate file called "Modules.py".
 
-import importlib
+matplotlib.use("TkAgg")  # This needs to happen before import any other things from matplotlib.
+# matplotlib.use("Qt5Agg")
 
 __thisversion__ = 0
 darkthemeavailable = 1
+Icon, Control_key, app, splash, lb01, progressbar = (None,)*6
 
 try:
     import qdarkstyle
@@ -98,7 +103,6 @@ class help_GUI(QWidget, Ui_help):
         QWidget.__init__(self)
         Ui_help.__init__(self)
         self.setupUi(self)
-
         self.currentindex = 0
         self.numberofpages = 0
 
@@ -412,7 +416,7 @@ class mainwindow(QMainWindow, Ui_main):
         self.clipboard.setParent(self)
         self.clipboard.hide()
 
-        for i in range(0, 30):  # Set 30 subwindows max.
+        for _ in range(0, 30):  # Set 30 subwindows max.
             sub = QMdiSubWindow()
             sub.setAutoFillBackground(True)
             sub.setAttribute(Qt.WA_DeleteOnClose)  # Important for closing tabs properly.
@@ -771,3 +775,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
